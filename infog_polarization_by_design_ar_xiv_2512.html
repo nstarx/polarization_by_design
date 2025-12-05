@@ -1,0 +1,659 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Polarization by Design – AI, Elites & Mass Preferences (Infographics)</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    :root {
+      --bg: #050816;
+      --bg-alt: #0b1020;
+      --card: #111827;
+      --accent: #38bdf8;
+      --accent-soft: rgba(56, 189, 248, 0.1);
+      --accent-2: #a855f7;
+      --text: #e5e7eb;
+      --muted: #9ca3af;
+      --danger: #f97373;
+      --border: #1f2937;
+      --radius-lg: 18px;
+      --radius-pill: 999px;
+      --shadow-soft: 0 18px 45px rgba(0, 0, 0, 0.55);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif;
+      background: radial-gradient(circle at top, #111827 0, #020617 42%, #000 100%);
+      color: var(--text);
+      line-height: 1.6;
+      padding: 40px 16px;
+    }
+
+    .shell {
+      max-width: 1180px;
+      margin: 0 auto;
+      background: linear-gradient(145deg, rgba(148, 163, 184, 0.06), rgba(15, 23, 42, 0.96));
+      border-radius: 28px;
+      padding: 28px 24px 32px;
+      border: 1px solid rgba(148, 163, 184, 0.25);
+      box-shadow: var(--shadow-soft);
+      backdrop-filter: blur(18px);
+    }
+
+    header.hero {
+      display: grid;
+      grid-template-columns: minmax(0, 2.2fr) minmax(0, 1.4fr);
+      gap: 22px;
+      align-items: center;
+      margin-bottom: 28px;
+    }
+
+    .hero-label {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 4px 12px;
+      border-radius: var(--radius-pill);
+      background: rgba(15, 23, 42, 0.85);
+      border: 1px solid rgba(56, 189, 248, 0.55);
+      font-size: 11px;
+      letter-spacing: 0.13em;
+      text-transform: uppercase;
+      color: var(--accent);
+    }
+
+    .hero-label-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 999px;
+      background: var(--accent);
+      box-shadow: 0 0 10px rgba(56, 189, 248, 0.9);
+    }
+
+    h1.title {
+      font-size: clamp(24px, 3vw, 30px);
+      letter-spacing: 0.03em;
+      margin: 10px 0 6px;
+    }
+
+    .subtitle {
+      font-size: 14px;
+      color: var(--muted);
+      max-width: 540px;
+    }
+
+    .meta-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 16px;
+      font-size: 12px;
+    }
+
+    .meta-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      padding: 5px 11px;
+      border-radius: var(--radius-pill);
+      background: rgba(15, 23, 42, 0.95);
+      border: 1px solid rgba(75, 85, 99, 0.9);
+      color: var(--muted);
+      white-space: nowrap;
+    }
+
+    .meta-pill span.key {
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+      font-size: 9px;
+      color: rgba(148, 163, 184, 0.85);
+    }
+
+    .meta-pill span.val {
+      font-weight: 500;
+    }
+
+    .hero-right {
+      background: radial-gradient(circle at top left, rgba(56, 189, 248, 0.25), transparent 65%),
+                  radial-gradient(circle at bottom right, rgba(168, 85, 247, 0.35), transparent 60%),
+                  var(--bg-alt);
+      border-radius: 24px;
+      padding: 16px 16px 18px;
+      border: 1px solid rgba(31, 41, 55, 0.95);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero-right::before {
+      content: "AI-Persuasion";
+      position: absolute;
+      top: 12px;
+      right: 16px;
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.18em;
+      color: rgba(226, 232, 240, 0.22);
+    }
+
+    .hero-right-main {
+      display: grid;
+      gap: 12px;
+    }
+
+    .stat-chip-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .stat-chip {
+      padding: 4px 9px;
+      border-radius: var(--radius-pill);
+      font-size: 11px;
+      border: 1px solid rgba(148, 163, 184, 0.6);
+      background: rgba(15, 23, 42, 0.92);
+      color: rgba(226, 232, 240, 0.92);
+    }
+
+    .two-col {
+      display: grid;
+      gap: 18px;
+      margin-top: 6px;
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    .two-col span.label {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.14em;
+      color: rgba(148, 163, 184, 0.85);
+      display: block;
+      margin-bottom: 3px;
+    }
+
+    a.hero-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      margin-top: 12px;
+      font-size: 12px;
+      color: var(--accent);
+      text-decoration: none;
+    }
+
+    a.hero-link span.icon {
+      font-size: 13px;
+      transform: translateY(1px);
+    }
+
+    main {
+      margin-top: 24px;
+      display: grid;
+      grid-template-columns: minmax(0, 1.6fr) minmax(0, 1.1fr);
+      gap: 20px;
+    }
+
+    .section-title {
+      font-size: 13px;
+      text-transform: uppercase;
+      letter-spacing: 0.16em;
+      color: rgba(148, 163, 184, 0.95);
+      margin-bottom: 10px;
+    }
+
+    .card {
+      background: radial-gradient(circle at top left, rgba(148, 163, 184, 0.12), transparent 60%),
+                  var(--card);
+      border-radius: var(--radius-lg);
+      padding: 14px 14px 15px;
+      border: 1px solid var(--border);
+      box-shadow: 0 12px 32px rgba(15, 23, 42, 0.65);
+    }
+
+    .card-header-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 6px;
+    }
+
+    .card-title {
+      font-size: 16px;
+    }
+
+    .tag {
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.16em;
+      padding: 3px 8px;
+      border-radius: var(--radius-pill);
+      background: rgba(15, 23, 42, 0.98);
+      border: 1px solid rgba(148, 163, 184, 0.6);
+      color: rgba(148, 163, 184, 0.95);
+      white-space: nowrap;
+    }
+
+    .pill-bar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin: 8px 0 6px;
+      font-size: 11px;
+    }
+
+    .pill {
+      padding: 4px 8px;
+      border-radius: var(--radius-pill);
+      border: 1px solid rgba(55, 65, 81, 0.9);
+      background: rgba(17, 24, 39, 0.98);
+      color: rgba(209, 213, 219, 0.96);
+    }
+
+    p {
+      font-size: 13px;
+      color: var(--muted);
+      margin-top: 5px;
+    }
+
+    ul {
+      list-style: none;
+      margin-top: 6px;
+      font-size: 13px;
+      color: var(--muted);
+    }
+
+    ul li {
+      display: grid;
+      grid-template-columns: 12px minmax(0, 1fr);
+      gap: 7px;
+      margin-bottom: 4px;
+    }
+
+    ul li span.bullet {
+      font-size: 11px;
+      line-height: 1.8;
+      color: var(--accent);
+    }
+
+    .split-2 {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+      margin-top: 8px;
+    }
+
+    .badge-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 8px;
+    }
+
+    .badge {
+      font-size: 11px;
+      padding: 3px 7px;
+      border-radius: var(--radius-pill);
+      background: rgba(8, 47, 73, 0.85);
+      border: 1px solid rgba(56, 189, 248, 0.8);
+      color: rgba(226, 232, 240, 0.96);
+    }
+
+    .badge.alt {
+      background: rgba(76, 29, 149, 0.7);
+      border-color: rgba(168, 85, 247, 0.85);
+    }
+
+    .diagram {
+      margin-top: 8px;
+      font-family: "JetBrains Mono", "SF Mono", ui-monospace, Menlo, Monaco, monospace;
+      font-size: 11px;
+      padding: 8px 9px;
+      border-radius: 12px;
+      background: radial-gradient(circle at top left, rgba(8, 47, 73, 0.55), transparent 60%),
+                  #020617;
+      border: 1px solid rgba(30, 64, 175, 0.75);
+      color: rgba(226, 232, 240, 0.95);
+      overflow-x: auto;
+      white-space: pre;
+    }
+
+    .danger-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 3px 8px;
+      border-radius: var(--radius-pill);
+      font-size: 11px;
+      background: rgba(127, 29, 29, 0.9);
+      border: 1px solid rgba(248, 113, 113, 0.95);
+      color: #fecaca;
+      margin-top: 8px;
+    }
+
+    .danger-pill span.dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 999px;
+      background: var(--danger);
+      box-shadow: 0 0 10px rgba(248, 113, 113, 0.9);
+    }
+
+    .footnote {
+      margin-top: 16px;
+      font-size: 11px;
+      color: rgba(148, 163, 184, 0.78);
+    }
+
+    .footnote strong {
+      color: rgba(226, 232, 240, 0.92);
+      font-weight: 600;
+    }
+
+    @media (max-width: 840px) {
+      header.hero {
+        grid-template-columns: minmax(0, 1fr);
+      }
+      main {
+        grid-template-columns: minmax(0, 1fr);
+      }
+    }
+
+    @media (max-width: 520px) {
+      .shell {
+        padding: 18px 14px 22px;
+      }
+      .meta-row {
+        gap: 6px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="shell">
+    <header class="hero">
+      <div>
+        <div class="hero-label">
+          <span class="hero-label-dot"></span>
+          <span>AI, Democracy & Opinion Design</span>
+        </div>
+        <h1 class="title">Polarization by Design: How Elites Could Shape Mass Preferences as AI Reduces Persuasion Costs</h1>
+        <p class="subtitle">
+          Visual summary of Nadav Kunievsky’s dynamic model of how AI-driven persuasion transforms public opinion from a constraint into a design variable for elites – and why this creates a <em>pull toward polarization</em>.
+        </p>
+        <div class="meta-row">
+          <div class="meta-pill">
+            <span class="key">Author</span>
+            <span class="val">Nadav Kunievsky, Knowledge Lab (UChicago)</span>
+          </div>
+          <div class="meta-pill">
+            <span class="key">Date</span>
+            <span class="val">December 4, 2025 (arXiv:2512.04047v1)</span>
+          </div>
+          <div class="meta-pill">
+            <span class="key">Field</span>
+            <span class="val">Political economy & AI persuasion</span>
+          </div>
+        </div>
+      </div>
+      <div class="hero-right">
+        <div class="hero-right-main">
+          <div class="stat-chip-row">
+            <div class="stat-chip"><strong>Core Question:</strong> If elites can cheaply engineer opinions, which opinion landscapes do they choose?</div>
+          </div>
+          <div class="two-col">
+            <div>
+              <span class="label">Key Mechanism</span>
+              A forward-looking elite faces uncertain future states but can invest today in shifting support for a binary policy under majority rule.
+            </div>
+            <div>
+              <span class="label">AI Twist</span>
+              Modern AI drastically reduces and reshapes persuasion costs, making mass preferences something that can be <strong>optimized</strong>, not just taken as given.
+            </div>
+          </div>
+          <a class="hero-link" href="https://arxiv.org/abs/2512.04047" target="_blank" rel="noreferrer">
+            Read full paper on arXiv <span class="icon">↗</span>
+          </a>
+        </div>
+      </div>
+    </header>
+
+    <main>
+      <section>
+        <div class="section-title">1. Big Picture</div>
+        <article class="card">
+          <div class="card-header-row">
+            <h2 class="card-title">From Opinion as Constraint &rarr; Opinion as Design Space</h2>
+            <div class="tag">Narrative</div>
+          </div>
+          <p>
+            In democracies, policy must pass a majority or consensus threshold. Historically, elites shaped mass support via slow, blunt tools such as education systems, broadcast media, or propaganda, facing high and rigid persuasion costs.
+          </p>
+          <p>
+            With AI systems that generate, test, and personalize persuasive content at scale, elites can now <strong>routinely redesign</strong> the distribution of public preferences. The paper asks: <strong>What opinion distributions are optimal</strong> when persuasion is cheap but future policy needs are uncertain?
+          </p>
+          <div class="pill-bar">
+            <div class="pill">Binary policy choice each period (0 vs 1)</div>
+            <div class="pill">Elite must win a majority to implement its preferred policy</div>
+            <div class="pill">Can pay a convex cost to shift the share supporting policy 1</div>
+            <div class="pill">Future states of the world are uncertain</div>
+          </div>
+        </article>
+
+        <div style="height: 12px;"></div>
+
+        <article class="card">
+          <div class="card-header-row">
+            <h2 class="card-title">2. Model Skeleton (Single Elite)</h2>
+            <div class="tag">Formal Setup</div>
+          </div>
+          <p>
+            Time is discrete. In each period <strong>t</strong>:
+          </p>
+          <ul>
+            <li><span class="bullet">•</span><span>
+              The state of the world <strong>s<sub>t</sub> &in; {0, 1}</strong> is drawn with probability <strong>Pr(s<sub>t</sub> = 1) = &pi;</strong>.
+            </span></li>
+            <li><span class="bullet">•</span><span>
+              The elite’s ideal policy equals the realized state (they want policy <strong>y<sub>t</sub> = s<sub>t</sub></strong>).
+            </span></li>
+            <li><span class="bullet">•</span><span>
+              Public support for policy 1 is <strong>p<sub>t</sub> &in; [0, 1]</strong>. Policy 1 is implemented if <strong>p<sub>t</sub> &gt; 1/2</strong>, policy 0 otherwise. At exactly 1/2 the elite can sway a tiny margin and pick.
+            </span></li>
+            <li><span class="bullet">•</span><span>
+              The elite can shift support from <strong>p</strong> to <strong>p'</strong> by paying a cost <strong>c(p' - p)</strong>, where <em>c</em> is symmetric, strictly increasing in |x| and strictly convex.
+            </span></li>
+          </ul>
+          <div class="diagram">
+State dynamics (single elite)
+
+  t:   observe state s_t
+       ↓
+       choose target support p'_t and pay cost c(p'_t - p_t)
+       ↓
+       majority rule implements y_t (0 or 1)
+       ↓
+       elite payoff: H if y_t = s_t, 0 otherwise
+       ↓
+       p_{t+1} inherits from p'_t (sticky opinions)
+          </div>
+          <div class="badge-row">
+            <div class="badge">Polarization (here): distance from unanimity; max when p = 0.5</div>
+            <div class="badge alt">Choice variable: the entire distribution of mass preferences, summarized by p</div>
+          </div>
+        </article>
+
+        <div style="height: 12px;"></div>
+
+        <article class="card">
+          <div class="card-header-row">
+            <h2 class="card-title">3. Polarization Pull (Single Elite)</h2>
+            <div class="tag">Key Result</div>
+          </div>
+          <p>
+            Whenever the elite decides it is worth paying to reshape opinion, the <strong>optimal adjustment moves society weakly toward maximal polarization</strong> (p = 0.5).
+          </p>
+          <div class="split-2">
+            <div>
+              <strong>Intuition:</strong>
+              <ul>
+                <li><span class="bullet">•</span><span>
+                  Future states are uncertain, but opinions are sticky and expensive to change.
+                </span></li>
+                <li><span class="bullet">•</span><span>
+                  If opinion sits close to the 50% threshold, flipping the majority after a state change requires minimal effort.
+                </span></li>
+                <li><span class="bullet">•</span><span>
+                  A polarized society acts like a pivot that is easy to nudge left or right as shocks arrive.
+                </span></li>
+              </ul>
+            </div>
+            <div>
+              <strong>Comparative statics:</strong>
+              <ul>
+                <li><span class="bullet">•</span><span>
+                  As <strong>persuasion becomes cheaper</strong> (e.g., via stronger AI tools), elites intervene more often.
+                </span></li>
+                <li><span class="bullet">•</span><span>
+                  More frequent interventions accelerate convergence toward highly polarized opinion profiles.
+                </span></li>
+              </ul>
+            </div>
+          </div>
+          <div class="diagram">
+Opinion landscape (single elite)
+
+  low polarization                 maximal polarization
+  p ≈ 0 or 1  -------------------------->  p ≈ 0.5
+             (stable but costly to move)       (cheap pivot for future shocks)
+
+  Optimal interventions pull p toward 0.5 whenever persuasion is used.
+          </div>
+        </article>
+      </section>
+
+      <section>
+        <div class="section-title">4. Two Competing Elites</div>
+        <article class="card">
+          <div class="card-header-row">
+            <h2 class="card-title">From Polarization Pull to Semi-Lock</h2>
+            <div class="tag">Competition</div>
+          </div>
+          <p>
+            The paper extends the model to <strong>two elites with opposing preferences</strong> who alternate in power and can each reshape opinions when they govern.
+          </p>
+          <ul>
+            <li><span class="bullet">•</span><span>
+              Each leader values a society near the majority threshold (cheap to move) but fears that a highly polarized society is also easy for the <em>rival</em> to recapture when power switches.
+            </span></li>
+            <li><span class="bullet">•</span><span>
+              This strategic tension introduces a desire to push opinions into <strong>“semi-lock” regions</strong> — configurations that are relatively cohesive and costly for a rival to overturn.
+            </span></li>
+          </ul>
+          <div class="diagram">
+Two-elite logic (stylized)
+
+  Elite A in power:
+    - wants opinions close enough to 0.5 to react cheaply;
+    - but not so balanced that Elite B can easily flip them when it gains power.
+
+  → pushes society toward "semi-lock":
+       not consensus, not full polarization, but a biased cluster that
+       is expensive for the rival to undo.
+          </div>
+          <p>
+            Whether more powerful persuasion tools <strong>increase or decrease</strong> polarization now depends on how this semi-lock incentive trades off against the single-elite polarization pull.
+          </p>
+        </article>
+
+        <div style="height: 12px;"></div>
+
+        <article class="card">
+          <div class="card-header-row">
+            <h2 class="card-title">5. When Does Polarization Dominate?</h2>
+            <div class="tag">Drivers</div>
+          </div>
+          <p>
+            The sign and strength of polarization effects depend on several parameters:
+          </p>
+          <ul>
+            <li><span class="bullet">•</span><span>
+              <strong>Persuasion cost shape & level:</strong> lower marginal costs (e.g. due to AI) make frequent micro-adjustments attractive, reinforcing polarization pull.
+            </span></li>
+            <li><span class="bullet">•</span><span>
+              <strong>Discount factor / horizon:</strong> more patient elites invest more in opinion shaping today to save costs tomorrow, which amplifies long-run design of opinion landscapes.
+            </span></li>
+            <li><span class="bullet">•</span><span>
+              <strong>State volatility:</strong> when future policy needs change often, polarized pivot points become especially valuable.
+            </span></li>
+            <li><span class="bullet">•</span><span>
+              <strong>Intensity of political competition:</strong> stronger rivalry increases the weight on semi-lock regions, potentially moderating polarization.
+            </span></li>
+          </ul>
+        </article>
+
+        <div style="height: 12px;"></div>
+
+        <article class="card">
+          <div class="card-header-row">
+            <h2 class="card-title">6. Why This Matters</h2>
+            <div class="tag">Implications</div>
+          </div>
+          <p>
+            The model reframes polarization as an <strong>instrument of governance</strong> rather than a passive outcome of deeper social forces. As AI-driven persuasion diffuses:
+          </p>
+          <ul>
+            <li><span class="bullet">•</span><span>
+              Mass preferences become a strategic design variable for those with resources and access to persuasive technology.
+            </span></li>
+            <li><span class="bullet">•</span><span>
+              The long-run distribution of opinions reflects <strong>optimal control decisions</strong> under uncertainty and competition, not just socio-economic cleavages.
+            </span></li>
+            <li><span class="bullet">•</span><span>
+              Democratic stability hinges on how widely these tools are available and whether institutions constrain their use.
+            </span></li>
+          </ul>
+          <div class="danger-pill">
+            <span class="dot"></span>
+            <span>Cheaper persuasion can make engineered polarization the rational choice, not an accident.</span>
+          </div>
+        </article>
+
+        <div style="height: 12px;"></div>
+
+        <article class="card">
+          <div class="card-header-row">
+            <h2 class="card-title">7. Quick Concept Glossary</h2>
+            <div class="tag">Cheat Sheet</div>
+          </div>
+          <ul>
+            <li><span class="bullet">•</span><span>
+              <strong>Polarization (here):</strong> how far society is from unanimous support for one policy; maximal when support is split 50/50.
+            </span></li>
+            <li><span class="bullet">•</span><span>
+              <strong>Semi-lock region:</strong> opinion distributions that favor one elite and are expensive for the rival to overturn, but still allow some future flexibility.
+            </span></li>
+            <li><span class="bullet">•</span><span>
+              <strong>Persuasion cost function c(x):</strong> convex, symmetric cost of changing the share backing policy 1 by x (small changes are cheap, large swings are expensive).
+            </span></li>
+            <li><span class="bullet">•</span><span>
+              <strong>Majority rule constraint:</strong> policy 1 requires more than half of citizens to back it; near 50%, tiny shifts can flip outcomes.
+            </span></li>
+          </ul>
+        </article>
+      </section>
+    </main>
+
+    <p class="footnote">
+      <strong>Use this sheet:</strong> as a high-level map of the paper. For proofs, equilibrium characterizations, and numerical results (especially in the two-elite case), jump into Sections 2 and 3 of the original PDF.
+    </p>
+  </div>
+</body>
+</html>

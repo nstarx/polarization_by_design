@@ -1,0 +1,540 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Polarization by Design - AI Persuasion Research Hub</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            min-height: 100vh;
+            color: #e0e0e0;
+        }
+
+        .hero {
+            min-height: 60vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 40px 20px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background:
+                radial-gradient(circle at 20% 50%, rgba(233, 69, 96, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 50%, rgba(78, 205, 196, 0.1) 0%, transparent 50%);
+            pointer-events: none;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 1;
+            max-width: 800px;
+        }
+
+        h1 {
+            font-size: 3.5rem;
+            background: linear-gradient(90deg, #e94560, #ff6b6b, #ffd93d);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 20px;
+            line-height: 1.2;
+        }
+
+        .subtitle {
+            font-size: 1.4rem;
+            color: #8892b0;
+            margin-bottom: 15px;
+        }
+
+        .paper-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: #64ffda;
+            text-decoration: none;
+            font-size: 1rem;
+            padding: 10px 20px;
+            border: 1px solid #64ffda;
+            border-radius: 25px;
+            transition: all 0.3s ease;
+            margin-bottom: 30px;
+        }
+
+        .paper-link:hover {
+            background: rgba(100, 255, 218, 0.1);
+            transform: translateY(-2px);
+        }
+
+        .abstract {
+            max-width: 700px;
+            text-align: left;
+            background: rgba(255, 255, 255, 0.05);
+            padding: 25px;
+            border-radius: 15px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            margin-top: 30px;
+        }
+
+        .abstract h3 {
+            color: #e94560;
+            margin-bottom: 15px;
+            font-size: 1.1rem;
+        }
+
+        .abstract p {
+            color: #a8b2d1;
+            line-height: 1.7;
+            font-size: 0.95rem;
+        }
+
+        .cards-section {
+            padding: 60px 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 2rem;
+            color: #ccd6f6;
+            margin-bottom: 40px;
+        }
+
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 30px;
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 20px;
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s ease;
+            text-decoration: none;
+            color: inherit;
+            display: block;
+        }
+
+        .card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+            border-color: rgba(100, 255, 218, 0.3);
+        }
+
+        .card-preview {
+            height: 200px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card-preview iframe {
+            width: 200%;
+            height: 200%;
+            transform: scale(0.5);
+            transform-origin: top left;
+            border: none;
+            pointer-events: none;
+        }
+
+        .card-preview-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(to bottom, transparent 50%, rgba(26, 26, 46, 0.9) 100%);
+        }
+
+        .card-content {
+            padding: 25px;
+        }
+
+        .card-badge {
+            display: inline-block;
+            padding: 5px 12px;
+            background: linear-gradient(135deg, #e94560, #ff6b6b);
+            color: #fff;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: bold;
+            text-transform: uppercase;
+            margin-bottom: 15px;
+        }
+
+        .card-badge.info {
+            background: linear-gradient(135deg, #4ecdc4, #44a08d);
+        }
+
+        .card h2 {
+            color: #ccd6f6;
+            font-size: 1.4rem;
+            margin-bottom: 12px;
+        }
+
+        .card p {
+            color: #8892b0;
+            font-size: 0.95rem;
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+
+        .card-features {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .feature-tag {
+            padding: 5px 10px;
+            background: rgba(100, 255, 218, 0.1);
+            border: 1px solid rgba(100, 255, 218, 0.3);
+            border-radius: 15px;
+            font-size: 0.8rem;
+            color: #64ffda;
+        }
+
+        .cta-button {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 15px;
+            padding: 12px 24px;
+            background: linear-gradient(135deg, #64ffda, #00bfa5);
+            color: #1a1a2e;
+            border-radius: 25px;
+            font-weight: bold;
+            font-size: 0.9rem;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .cta-button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 20px rgba(100, 255, 218, 0.4);
+        }
+
+        .key-concepts {
+            padding: 60px 20px;
+            background: rgba(0, 0, 0, 0.2);
+        }
+
+        .concepts-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .concepts-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+            margin-top: 40px;
+        }
+
+        .concept-card {
+            background: rgba(255, 255, 255, 0.03);
+            padding: 25px;
+            border-radius: 15px;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .concept-icon {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, #e94560, #ff6b6b);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 15px;
+        }
+
+        .concept-icon svg {
+            width: 26px;
+            height: 26px;
+            color: #fff;
+        }
+
+        .concept-card h3 {
+            color: #ccd6f6;
+            font-size: 1.1rem;
+            margin-bottom: 10px;
+        }
+
+        .concept-card p {
+            color: #8892b0;
+            font-size: 0.9rem;
+            line-height: 1.6;
+        }
+
+        footer {
+            text-align: center;
+            padding: 40px 20px;
+            color: #8892b0;
+            font-size: 0.9rem;
+        }
+
+        footer a {
+            color: #64ffda;
+            text-decoration: none;
+        }
+
+        footer a:hover {
+            text-decoration: underline;
+        }
+
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2.2rem;
+            }
+
+            .subtitle {
+                font-size: 1.1rem;
+            }
+
+            .cards-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <section class="hero">
+        <div class="hero-content">
+            <h1>Polarization by Design</h1>
+            <p class="subtitle">Exploring How AI Persuasion Technology Transforms Democratic Governance</p>
+
+            <a href="https://arxiv.org/abs/2512.04047" target="_blank" class="paper-link">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M19.5 14.25v-2.625a3.375 3.375 0 0 0-3.375-3.375h-1.5A1.125 1.125 0 0 1 13.5 7.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 0 0-9-9Z" />
+                </svg>
+                Read Original Paper (arXiv:2512.04047)
+            </a>
+
+            <div class="abstract">
+                <h3>Paper Abstract</h3>
+                <p>
+                    This research examines how advancing AI-driven persuasion technology fundamentally changes elite strategy in democracies.
+                    Rather than polarization emerging organically from social dynamics, the paper argues it becomes a <strong>deliberate governance tool</strong>
+                    when persuasion costs drop significantly. The model reveals a "polarization pull" effect where optimal strategies push society
+                    toward more extreme opinion distributions, with competing elites creating "semi-lock" regions resistant to rival manipulation.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <section class="cards-section">
+        <h2 class="section-title">Interactive Simulations</h2>
+
+        <div class="cards-grid">
+            <a href="polarization-simulator.html" class="card">
+                <div class="card-preview">
+                    <iframe src="polarization-simulator.html" loading="lazy"></iframe>
+                    <div class="card-preview-overlay"></div>
+                </div>
+                <div class="card-content">
+                    <span class="card-badge">Interactive</span>
+                    <h2>Opinion Distribution Simulator</h2>
+                    <p>
+                        Visualize how AI persuasion technology affects population opinion distributions.
+                        Experiment with single elite and competing elites scenarios to observe polarization dynamics in real-time.
+                    </p>
+                    <div class="card-features">
+                        <span class="feature-tag">Real-time visualization</span>
+                        <span class="feature-tag">8 preset scenarios</span>
+                        <span class="feature-tag">Adjustable parameters</span>
+                    </div>
+                    <div class="cta-button">
+                        Launch Simulator
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" />
+                        </svg>
+                    </div>
+                </div>
+            </a>
+
+            <a href="polarization-simulator.html#scenarios" class="card">
+                <div class="card-preview" style="background: linear-gradient(135deg, #1a1a2e, #16213e); display: flex; align-items: center; justify-content: center;">
+                    <div style="text-align: center; padding: 20px;">
+                        <div style="margin-bottom: 15px;">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#64ffda" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 0 1 3 19.875v-6.75ZM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v11.25c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 0 1-1.125-1.125V8.625ZM16.5 4.125c0-.621.504-1.125 1.125-1.125h2.25C20.496 3 21 3.504 21 4.125v15.75c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 0 1-1.125-1.125V4.125Z" />
+                            </svg>
+                        </div>
+                        <div style="color: #64ffda; font-size: 1.2rem; font-weight: bold;">8 Scenarios</div>
+                        <div style="color: #8892b0; font-size: 0.9rem; margin-top: 5px;">Pre-configured experiments</div>
+                    </div>
+                </div>
+                <div class="card-content">
+                    <span class="card-badge info">Scenarios</span>
+                    <h2>Template Scenario Guide</h2>
+                    <p>
+                        Explore pre-built scenarios that demonstrate key findings from the paper:
+                        from authoritarian AI takeover to balanced democratic competition.
+                    </p>
+                    <div class="card-features">
+                        <span class="feature-tag">Authoritarian AI</span>
+                        <span class="feature-tag">Two-Party War</span>
+                        <span class="feature-tag">Entrenched Camps</span>
+                        <span class="feature-tag">Resistant Population</span>
+                    </div>
+                    <div class="cta-button">
+                        Explore Scenarios
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" />
+                        </svg>
+                    </div>
+                </div>
+            </a>
+
+            <a href="infog_polarization_by_design_ar_xiv_2512.html" class="card">
+                <div class="card-preview" style="padding: 0; overflow: hidden;">
+                    <img src="img.png" alt="Polarization by Design infographic" style="width: 100%; height: 100%; object-fit: cover;">
+                    <div class="card-preview-overlay"></div>
+                </div>
+                <div class="card-content">
+                    <span class="card-badge" style="background: linear-gradient(135deg, #a855f7, #7c3aed);">Infographic</span>
+                    <h2>Visual Paper Summary</h2>
+                    <p>
+                        A comprehensive infographic breakdown of the research paper covering the model mechanics,
+                        key results, and implications for democracy in the AI era.
+                    </p>
+                    <div class="card-features">
+                        <span class="feature-tag">Model skeleton</span>
+                        <span class="feature-tag">Polarization pull</span>
+                        <span class="feature-tag">Semi-lock regions</span>
+                        <span class="feature-tag">Concept glossary</span>
+                    </div>
+                    <div class="cta-button">
+                        View Infographic
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" />
+                        </svg>
+                    </div>
+                </div>
+            </a>
+        </div>
+    </section>
+
+    <section class="key-concepts">
+        <div class="concepts-container">
+            <h2 class="section-title">Key Concepts from the Paper</h2>
+
+            <div class="concepts-grid">
+                <div class="concept-card">
+                    <div class="concept-icon">
+                        <!-- Heroicon: arrow-trending-down -->
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 6 9 12.75l4.286-4.286a11.948 11.948 0 0 1 4.306 6.43l.776 2.898m0 0 3.182-5.511m-3.182 5.51-5.511-3.181" />
+                        </svg>
+                    </div>
+                    <h3>Persuasion Cost</h3>
+                    <p>
+                        As AI technology advances, the cost of persuading individuals drops dramatically.
+                        Lower costs enable more aggressive manipulation strategies that were previously economically unfeasible.
+                    </p>
+                </div>
+
+                <div class="concept-card">
+                    <div class="concept-icon">
+                        <!-- Heroicon: bolt -->
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="m3.75 13.5 10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75Z" />
+                        </svg>
+                    </div>
+                    <h3>Polarization Pull</h3>
+                    <p>
+                        When a single elite controls persuasion technology, the optimal strategy "pulls"
+                        the population toward extreme positions. This effect accelerates as technology improves.
+                    </p>
+                </div>
+
+                <div class="concept-card">
+                    <div class="concept-icon">
+                        <!-- Heroicon: lock-closed -->
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 1 0-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 0 0 2.25-2.25v-6.75a2.25 2.25 0 0 0-2.25-2.25H6.75a2.25 2.25 0 0 0-2.25 2.25v6.75a2.25 2.25 0 0 0 2.25 2.25Z" />
+                        </svg>
+                    </div>
+                    <h3>Semi-Lock Regions</h3>
+                    <p>
+                        In competing elites scenarios, each side creates regions of highly committed supporters
+                        who become resistant to rival manipulation, forming entrenched political tribes.
+                    </p>
+                </div>
+
+                <div class="concept-card">
+                    <div class="concept-icon">
+                        <!-- Heroicon: scale -->
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v17.25m0 0c-1.472 0-2.882.265-4.185.75M12 20.25c1.472 0 2.882.265 4.185.75M18.75 4.97A48.416 48.416 0 0 0 12 4.5c-2.291 0-4.545.16-6.75.47m13.5 0c1.01.143 2.01.317 3 .52m-3-.52 2.62 10.726c.122.499-.106 1.028-.589 1.202a5.988 5.988 0 0 1-2.031.352 5.988 5.988 0 0 1-2.031-.352c-.483-.174-.711-.703-.59-1.202L18.75 4.971Zm-16.5.52c.99-.203 1.99-.377 3-.52m0 0 2.62 10.726c.122.499-.106 1.028-.589 1.202a5.989 5.989 0 0 1-2.031.352 5.989 5.989 0 0 1-2.031-.352c-.483-.174-.711-.703-.59-1.202L5.25 4.971Z" />
+                        </svg>
+                    </div>
+                    <h3>Power Transitions</h3>
+                    <p>
+                        The frequency of power changes between elites affects polarization dynamics.
+                        Stable regimes polarize more; frequent transitions create chaotic, oscillating opinions.
+                    </p>
+                </div>
+
+                <div class="concept-card">
+                    <div class="concept-icon">
+                        <!-- Heroicon: cursor-arrow-rays -->
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M15.042 21.672 13.684 16.6m0 0-2.51 2.225.569-9.47 5.227 7.917-3.286-.672ZM12 2.25V4.5m5.834.166-1.591 1.591M20.25 10.5H18M7.757 14.743l-1.59 1.59M6 10.5H3.75m4.007-4.243-1.59-1.59" />
+                        </svg>
+                    </div>
+                    <h3>Strategic Targeting</h3>
+                    <p>
+                        Elites prioritize persuading center-leaning individuals who are more susceptible to influence,
+                        gradually shifting the entire distribution while extremists remain largely unaffected.
+                    </p>
+                </div>
+
+                <div class="concept-card">
+                    <div class="concept-icon">
+                        <!-- Heroicon: building-library -->
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 21v-8.25M15.75 21v-8.25M8.25 21v-8.25M3 9l9-6 9 6m-1.5 12V10.332A48.36 48.36 0 0 0 12 10c-2.59 0-5.134.202-7.5.582V21M3 21h18M12 6.75h.008v.008H12V6.75Z" />
+                        </svg>
+                    </div>
+                    <h3>Democratic Implications</h3>
+                    <p>
+                        The research reframes polarization from an accidental social phenomenon to calculated governance strategy,
+                        raising fundamental concerns about democratic stability in the AI era.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <p>
+            Based on research paper: <a href="https://arxiv.org/abs/2512.04047" target="_blank">arXiv:2512.04047</a> - Polarization by Design
+        </p>
+        <p style="margin-top: 10px; font-size: 0.8rem;">
+            This is an educational simulation for exploring the paper's concepts. Not affiliated with the original authors.
+        </p>
+    </footer>
+</body>
+</html>

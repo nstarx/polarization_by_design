@@ -1,0 +1,1134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Polarization by Design - AI Persuasion Simulator</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            min-height: 100vh;
+            color: #e0e0e0;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            background: linear-gradient(90deg, #e94560, #ff6b6b);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            color: #8892b0;
+            font-size: 1.1rem;
+        }
+
+        .paper-ref {
+            font-size: 0.9rem;
+            color: #64ffda;
+            margin-top: 5px;
+        }
+
+        .main-grid {
+            display: grid;
+            grid-template-columns: 300px 1fr;
+            gap: 20px;
+        }
+
+        .controls {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            padding: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .control-group {
+            margin-bottom: 25px;
+        }
+
+        .control-group h3 {
+            color: #64ffda;
+            margin-bottom: 15px;
+            font-size: 1rem;
+            border-bottom: 1px solid rgba(100, 255, 218, 0.3);
+            padding-bottom: 8px;
+        }
+
+        .control-item {
+            margin-bottom: 15px;
+        }
+
+        .control-item label {
+            display: block;
+            margin-bottom: 5px;
+            color: #ccd6f6;
+            font-size: 0.9rem;
+        }
+
+        .control-item input[type="range"] {
+            width: 100%;
+            height: 6px;
+            border-radius: 3px;
+            background: #233554;
+            outline: none;
+            -webkit-appearance: none;
+        }
+
+        .control-item input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background: #e94560;
+            cursor: pointer;
+            border: 2px solid #fff;
+        }
+
+        .value-display {
+            text-align: right;
+            color: #e94560;
+            font-weight: bold;
+            font-size: 0.9rem;
+        }
+
+        .mode-buttons {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .mode-btn {
+            flex: 1;
+            min-width: 100px;
+            padding: 10px;
+            border: 2px solid #e94560;
+            background: transparent;
+            color: #e94560;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            transition: all 0.3s ease;
+        }
+
+        .mode-btn:hover, .mode-btn.active {
+            background: #e94560;
+            color: #fff;
+        }
+
+        .action-btn {
+            width: 100%;
+            padding: 12px;
+            margin-top: 10px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .start-btn {
+            background: linear-gradient(135deg, #64ffda, #00bfa5);
+            color: #1a1a2e;
+        }
+
+        .reset-btn {
+            background: linear-gradient(135deg, #e94560, #ff6b6b);
+            color: #fff;
+        }
+
+        .action-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(100, 255, 218, 0.3);
+        }
+
+        .visualization {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            padding: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .viz-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .viz-header h2 {
+            color: #ccd6f6;
+        }
+
+        .stats {
+            display: flex;
+            gap: 20px;
+        }
+
+        .stat {
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #64ffda;
+        }
+
+        .stat-label {
+            font-size: 0.75rem;
+            color: #8892b0;
+        }
+
+        .canvas-container {
+            position: relative;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 10px;
+            overflow: hidden;
+            margin-bottom: 20px;
+        }
+
+        canvas {
+            display: block;
+            width: 100%;
+        }
+
+        .legend {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            padding: 15px;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 8px;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.9rem;
+        }
+
+        .legend-color {
+            width: 20px;
+            height: 20px;
+            border-radius: 4px;
+        }
+
+        .info-panel {
+            margin-top: 20px;
+            padding: 15px;
+            background: rgba(100, 255, 218, 0.1);
+            border-radius: 8px;
+            border: 1px solid rgba(100, 255, 218, 0.3);
+        }
+
+        .info-panel h4 {
+            color: #64ffda;
+            margin-bottom: 10px;
+        }
+
+        .info-panel p {
+            font-size: 0.9rem;
+            line-height: 1.6;
+            color: #a8b2d1;
+        }
+
+        .timeline-container {
+            margin-top: 20px;
+        }
+
+        .timeline-canvas {
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 8px;
+        }
+
+        .timeline-explanation {
+            margin-top: 15px;
+            padding: 15px;
+            background: rgba(233, 69, 96, 0.1);
+            border-radius: 8px;
+            border: 1px solid rgba(233, 69, 96, 0.3);
+        }
+
+        .timeline-explanation h4 {
+            color: #e94560;
+            margin-bottom: 10px;
+            font-size: 0.95rem;
+        }
+
+        .timeline-explanation p {
+            font-size: 0.85rem;
+            line-height: 1.6;
+            color: #a8b2d1;
+            margin-bottom: 8px;
+        }
+
+        .timeline-explanation ul {
+            margin-left: 20px;
+            font-size: 0.85rem;
+            color: #a8b2d1;
+        }
+
+        .timeline-explanation li {
+            margin-bottom: 5px;
+        }
+
+        .scenarios-group {
+            margin-bottom: 20px;
+        }
+
+        .scenario-select {
+            width: 100%;
+            padding: 10px;
+            background: #233554;
+            border: 2px solid #64ffda;
+            border-radius: 8px;
+            color: #ccd6f6;
+            font-size: 0.9rem;
+            cursor: pointer;
+            outline: none;
+        }
+
+        .scenario-select:hover {
+            background: #2a4066;
+        }
+
+        .scenario-select option {
+            background: #1a1a2e;
+            color: #ccd6f6;
+            padding: 10px;
+        }
+
+        .scenario-description {
+            margin-top: 10px;
+            padding: 10px;
+            background: rgba(100, 255, 218, 0.08);
+            border-radius: 6px;
+            font-size: 0.8rem;
+            color: #8892b0;
+            line-height: 1.5;
+            min-height: 60px;
+        }
+
+        .scenario-badge {
+            display: inline-block;
+            padding: 2px 8px;
+            background: #64ffda;
+            color: #1a1a2e;
+            border-radius: 4px;
+            font-size: 0.7rem;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        @media (max-width: 900px) {
+            .main-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Polarization by Design</h1>
+            <p class="subtitle">Interactive Simulation of AI-Driven Political Persuasion Dynamics</p>
+            <p class="paper-ref">Based on: arXiv:2512.04047 - How AI persuasion technology transforms elite strategy</p>
+        </header>
+
+        <div class="main-grid">
+            <div class="controls">
+                <div class="control-group scenarios-group">
+                    <h3>Template Scenarios</h3>
+                    <select class="scenario-select" id="scenarioSelect">
+                        <option value="custom">Custom Settings</option>
+                        <optgroup label="Single Elite Scenarios">
+                            <option value="authoritarian-ai">Authoritarian AI Takeover</option>
+                            <option value="gentle-nudge">Gentle Nudge Democracy</option>
+                            <option value="rapid-radicalization">Rapid Radicalization</option>
+                            <option value="resistant-population">Resistant Population</option>
+                        </optgroup>
+                        <optgroup label="Competing Elites Scenarios">
+                            <option value="two-party-war">Two-Party Polarization War</option>
+                            <option value="unstable-democracy">Unstable Democracy</option>
+                            <option value="entrenched-camps">Entrenched Political Camps</option>
+                            <option value="balanced-competition">Balanced Competition</option>
+                        </optgroup>
+                    </select>
+                    <div class="scenario-description" id="scenarioDescription">
+                        Select a scenario to load preset configurations that demonstrate different polarization dynamics from the paper.
+                    </div>
+                </div>
+
+                <div class="control-group">
+                    <h3>Scenario Mode</h3>
+                    <div class="mode-buttons">
+                        <button class="mode-btn active" data-mode="single">Single Elite</button>
+                        <button class="mode-btn" data-mode="competing">Competing Elites</button>
+                    </div>
+                </div>
+
+                <div class="control-group">
+                    <h3>AI Technology Parameters</h3>
+                    <div class="control-item">
+                        <label>Persuasion Cost (lower = more powerful AI)</label>
+                        <input type="range" id="persuasionCost" min="0.1" max="2" step="0.1" value="1">
+                        <div class="value-display" id="persuasionCostValue">1.0</div>
+                    </div>
+                    <div class="control-item">
+                        <label>Persuasion Reach (% of population)</label>
+                        <input type="range" id="persuasionReach" min="5" max="100" step="5" value="30">
+                        <div class="value-display" id="persuasionReachValue">30%</div>
+                    </div>
+                    <div class="control-item">
+                        <label>Message Intensity</label>
+                        <input type="range" id="messageIntensity" min="0.1" max="1" step="0.05" value="0.5">
+                        <div class="value-display" id="messageIntensityValue">0.50</div>
+                    </div>
+                </div>
+
+                <div class="control-group">
+                    <h3>Population Parameters</h3>
+                    <div class="control-item">
+                        <label>Initial Distribution (spread)</label>
+                        <input type="range" id="initialSpread" min="0.1" max="0.5" step="0.05" value="0.25">
+                        <div class="value-display" id="initialSpreadValue">0.25</div>
+                    </div>
+                    <div class="control-item">
+                        <label>Resistance to Change</label>
+                        <input type="range" id="resistance" min="0.1" max="0.9" step="0.1" value="0.5">
+                        <div class="value-display" id="resistanceValue">0.50</div>
+                    </div>
+                    <div class="control-item">
+                        <label>Population Size</label>
+                        <input type="range" id="populationSize" min="100" max="2000" step="100" value="500">
+                        <div class="value-display" id="populationSizeValue">500</div>
+                    </div>
+                </div>
+
+                <div class="control-group" id="competingControls" style="display: none;">
+                    <h3>Competing Elites Settings</h3>
+                    <div class="control-item">
+                        <label>Power Transition Rate</label>
+                        <input type="range" id="transitionRate" min="0.01" max="0.2" step="0.01" value="0.05">
+                        <div class="value-display" id="transitionRateValue">0.05</div>
+                    </div>
+                    <div class="control-item">
+                        <label>Elite B Strength</label>
+                        <input type="range" id="eliteBStrength" min="0.2" max="1" step="0.1" value="0.7">
+                        <div class="value-display" id="eliteBStrengthValue">0.70</div>
+                    </div>
+                </div>
+
+                <button class="action-btn start-btn" id="startBtn">Start Simulation</button>
+                <button class="action-btn reset-btn" id="resetBtn">Reset</button>
+            </div>
+
+            <div class="visualization">
+                <div class="viz-header">
+                    <h2>Opinion Distribution</h2>
+                    <div class="stats">
+                        <div class="stat">
+                            <div class="stat-value" id="timeStep">0</div>
+                            <div class="stat-label">Time Step</div>
+                        </div>
+                        <div class="stat">
+                            <div class="stat-value" id="polarizationIndex">0.00</div>
+                            <div class="stat-label">Polarization Index</div>
+                        </div>
+                        <div class="stat">
+                            <div class="stat-value" id="currentElite">A</div>
+                            <div class="stat-label">Ruling Elite</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="canvas-container">
+                    <canvas id="mainCanvas" width="800" height="400"></canvas>
+                </div>
+
+                <div class="legend">
+                    <div class="legend-item">
+                        <div class="legend-color" style="background: #e94560;"></div>
+                        <span>Elite A Target (Right)</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-color" style="background: #4ecdc4;"></div>
+                        <span>Elite B Target (Left)</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-color" style="background: #ffd93d;"></div>
+                        <span>Population Distribution</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-color" style="background: rgba(100, 255, 218, 0.5);"></div>
+                        <span>Semi-Lock Region</span>
+                    </div>
+                </div>
+
+                <div class="timeline-container">
+                    <h3 style="color: #ccd6f6; margin-bottom: 10px;">Polarization Over Time</h3>
+                    <canvas id="timelineCanvas" class="timeline-canvas" width="800" height="150"></canvas>
+
+                    <div class="timeline-explanation">
+                        <h4>Understanding the Polarization Index</h4>
+                        <p>
+                            The <strong>Polarization Index</strong> (0.0 - 1.0) measures how divided the population's opinions are.
+                            It combines three factors from the paper's model:
+                        </p>
+                        <ul>
+                            <li><strong>Variance:</strong> How spread out opinions are from the mean (higher = more dispersed)</li>
+                            <li><strong>Bimodality:</strong> Proportion of population at extremes (&lt;0.4 or &gt;0.6) vs. center</li>
+                            <li><strong>Center Emptiness:</strong> How few people remain moderate (0.4-0.6 range)</li>
+                        </ul>
+                        <p>
+                            <strong>Reading the Graph:</strong> A rising line shows increasing polarization - the elite's strategy is working.
+                            Flat lines indicate equilibrium. In competing mode, oscillations reflect power transitions between elites.
+                            The paper argues that as AI persuasion costs drop, the equilibrium polarization level rises -
+                            making extreme division the optimal governance strategy.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="info-panel" id="infoPanel">
+                    <h4>Current Dynamics</h4>
+                    <p id="infoText">
+                        The simulation models how AI-driven persuasion technology affects opinion distributions.
+                        Lower persuasion costs enable elites to more effectively push populations toward extreme positions.
+                        Start the simulation to observe the "polarization pull" effect described in the paper.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Scenario Templates
+        const scenarios = {
+            'custom': {
+                name: 'Custom Settings',
+                description: 'Configure your own parameters to explore different polarization dynamics.',
+                mode: null, // Don't change mode
+                params: null // Don't change params
+            },
+            'authoritarian-ai': {
+                name: 'Authoritarian AI Takeover',
+                description: 'A single ruling elite with access to extremely cheap, powerful AI persuasion technology. Represents a dystopian scenario where AI makes mass manipulation nearly costless. Watch how rapidly the population shifts to extreme positions.',
+                mode: 'single',
+                params: {
+                    persuasionCost: 0.2,
+                    persuasionReach: 90,
+                    messageIntensity: 0.95,
+                    initialSpread: 0.25,
+                    resistance: 0.2,
+                    populationSize: 1000,
+                    transitionRate: 0.05,
+                    eliteBStrength: 0.7
+                }
+            },
+            'gentle-nudge': {
+                name: 'Gentle Nudge Democracy',
+                description: 'A single elite with moderate persuasion capabilities and limited reach. Represents current social media influence without advanced AI. Polarization happens slowly and may not reach extremes.',
+                mode: 'single',
+                params: {
+                    persuasionCost: 1.5,
+                    persuasionReach: 25,
+                    messageIntensity: 0.35,
+                    initialSpread: 0.2,
+                    resistance: 0.6,
+                    populationSize: 800,
+                    transitionRate: 0.05,
+                    eliteBStrength: 0.7
+                }
+            },
+            'rapid-radicalization': {
+                name: 'Rapid Radicalization',
+                description: 'Moderate AI costs but extremely high message intensity targeting a narrow, susceptible group. Models targeted radicalization of specific demographics rather than broad population manipulation.',
+                mode: 'single',
+                params: {
+                    persuasionCost: 0.6,
+                    persuasionReach: 15,
+                    messageIntensity: 1.0,
+                    initialSpread: 0.3,
+                    resistance: 0.3,
+                    populationSize: 500,
+                    transitionRate: 0.05,
+                    eliteBStrength: 0.7
+                }
+            },
+            'resistant-population': {
+                name: 'Resistant Population',
+                description: 'A highly educated, skeptical population that resists persuasion attempts. Even with cheap AI, the elite struggles to shift opinions significantly. Shows limits of persuasion technology.',
+                mode: 'single',
+                params: {
+                    persuasionCost: 0.4,
+                    persuasionReach: 60,
+                    messageIntensity: 0.7,
+                    initialSpread: 0.15,
+                    resistance: 0.9,
+                    populationSize: 600,
+                    transitionRate: 0.05,
+                    eliteBStrength: 0.7
+                }
+            },
+            'two-party-war': {
+                name: 'Two-Party Polarization War',
+                description: 'Two equally powerful elites with advanced AI compete for influence. Each pushes their base to extremes while fighting for the center. Creates the classic bimodal polarized distribution.',
+                mode: 'competing',
+                params: {
+                    persuasionCost: 0.3,
+                    persuasionReach: 50,
+                    messageIntensity: 0.8,
+                    initialSpread: 0.25,
+                    resistance: 0.4,
+                    populationSize: 1000,
+                    transitionRate: 0.08,
+                    eliteBStrength: 1.0
+                }
+            },
+            'unstable-democracy': {
+                name: 'Unstable Democracy',
+                description: 'Frequent power transitions between elites with moderate persuasion capabilities. The constant switching creates chaotic opinion dynamics and prevents stable polarization.',
+                mode: 'competing',
+                params: {
+                    persuasionCost: 0.8,
+                    persuasionReach: 40,
+                    messageIntensity: 0.6,
+                    initialSpread: 0.3,
+                    resistance: 0.5,
+                    populationSize: 700,
+                    transitionRate: 0.18,
+                    eliteBStrength: 0.8
+                }
+            },
+            'entrenched-camps': {
+                name: 'Entrenched Political Camps',
+                description: 'Low power transition rate means each elite has time to create "semi-lock" regions - highly committed supporters resistant to the opposing elite. Watch the formation of entrenched political tribes.',
+                mode: 'competing',
+                params: {
+                    persuasionCost: 0.4,
+                    persuasionReach: 70,
+                    messageIntensity: 0.75,
+                    initialSpread: 0.35,
+                    resistance: 0.3,
+                    populationSize: 800,
+                    transitionRate: 0.02,
+                    eliteBStrength: 0.9
+                }
+            },
+            'balanced-competition': {
+                name: 'Balanced Competition',
+                description: 'Moderate settings across all parameters. Represents a relatively healthy democracy where elites compete but neither dominates. Polarization grows slowly with periodic corrections.',
+                mode: 'competing',
+                params: {
+                    persuasionCost: 1.0,
+                    persuasionReach: 35,
+                    messageIntensity: 0.5,
+                    initialSpread: 0.2,
+                    resistance: 0.5,
+                    populationSize: 600,
+                    transitionRate: 0.06,
+                    eliteBStrength: 0.7
+                }
+            }
+        };
+
+        // Simulation State
+        const state = {
+            running: false,
+            mode: 'single',
+            timeStep: 0,
+            population: [],
+            polarizationHistory: [],
+            currentElite: 'A',
+            animationId: null
+        };
+
+        // DOM Elements
+        const mainCanvas = document.getElementById('mainCanvas');
+        const mainCtx = mainCanvas.getContext('2d');
+        const timelineCanvas = document.getElementById('timelineCanvas');
+        const timelineCtx = timelineCanvas.getContext('2d');
+
+        // Initialize canvases for high DPI
+        function setupCanvas(canvas, ctx) {
+            const dpr = window.devicePixelRatio || 1;
+            const rect = canvas.getBoundingClientRect();
+            canvas.width = rect.width * dpr;
+            canvas.height = rect.height * dpr;
+            ctx.scale(dpr, dpr);
+            canvas.style.width = rect.width + 'px';
+            canvas.style.height = rect.height + 'px';
+        }
+
+        // Get parameter values
+        function getParams() {
+            return {
+                persuasionCost: parseFloat(document.getElementById('persuasionCost').value),
+                persuasionReach: parseFloat(document.getElementById('persuasionReach').value) / 100,
+                messageIntensity: parseFloat(document.getElementById('messageIntensity').value),
+                initialSpread: parseFloat(document.getElementById('initialSpread').value),
+                resistance: parseFloat(document.getElementById('resistance').value),
+                populationSize: parseInt(document.getElementById('populationSize').value),
+                transitionRate: parseFloat(document.getElementById('transitionRate').value),
+                eliteBStrength: parseFloat(document.getElementById('eliteBStrength').value)
+            };
+        }
+
+        // Initialize population with normal distribution
+        function initializePopulation(size, spread) {
+            const population = [];
+            for (let i = 0; i < size; i++) {
+                // Box-Muller transform for normal distribution
+                let u1 = Math.random();
+                let u2 = Math.random();
+                let z = Math.sqrt(-2 * Math.log(u1)) * Math.cos(2 * Math.PI * u2);
+                let opinion = 0.5 + z * spread;
+                opinion = Math.max(0, Math.min(1, opinion)); // Clamp to [0, 1]
+                population.push({
+                    opinion: opinion,
+                    resistance: 0.3 + Math.random() * 0.4,
+                    locked: false
+                });
+            }
+            return population;
+        }
+
+        // Calculate polarization index
+        function calculatePolarization(population) {
+            if (population.length === 0) return 0;
+
+            const mean = population.reduce((sum, p) => sum + p.opinion, 0) / population.length;
+            const variance = population.reduce((sum, p) => sum + Math.pow(p.opinion - mean, 2), 0) / population.length;
+
+            // Bimodality measure
+            const leftCount = population.filter(p => p.opinion < 0.4).length;
+            const rightCount = population.filter(p => p.opinion > 0.6).length;
+            const centerCount = population.filter(p => p.opinion >= 0.4 && p.opinion <= 0.6).length;
+
+            const bimodality = (leftCount + rightCount) / population.length;
+            const emptiness = 1 - (centerCount / population.length);
+
+            return Math.min(1, variance * 4 + bimodality * 0.3 + emptiness * 0.2);
+        }
+
+        // Elite persuasion step
+        function persuasionStep() {
+            const params = getParams();
+            const effectiveness = (1 / params.persuasionCost) * params.messageIntensity;
+
+            // Determine target direction based on current elite
+            let targetDirection, targetPosition;
+            if (state.currentElite === 'A') {
+                targetDirection = 1; // Push right
+                targetPosition = 0.85;
+            } else {
+                targetDirection = -1; // Push left
+                targetPosition = 0.15;
+            }
+
+            // Select individuals to target
+            const targetCount = Math.floor(state.population.length * params.persuasionReach);
+            const targetIndices = [];
+
+            // Prioritize individuals closer to center (more persuadable)
+            const sortedByCenter = state.population
+                .map((p, i) => ({ index: i, distance: Math.abs(p.opinion - 0.5) }))
+                .sort((a, b) => a.distance - b.distance);
+
+            for (let i = 0; i < Math.min(targetCount, sortedByCenter.length); i++) {
+                targetIndices.push(sortedByCenter[i].index);
+            }
+
+            // Apply persuasion
+            targetIndices.forEach(idx => {
+                const person = state.population[idx];
+                if (!person.locked) {
+                    const persuasionForce = effectiveness * (1 - params.resistance * person.resistance);
+                    const direction = targetPosition - person.opinion;
+                    person.opinion += direction * persuasionForce * 0.1;
+                    person.opinion = Math.max(0, Math.min(1, person.opinion));
+
+                    // Create semi-lock in competing mode
+                    if (state.mode === 'competing') {
+                        if (person.opinion < 0.2 || person.opinion > 0.8) {
+                            person.locked = Math.random() < 0.1;
+                        }
+                    }
+                }
+            });
+
+            // Power transition in competing mode
+            if (state.mode === 'competing') {
+                if (Math.random() < params.transitionRate) {
+                    state.currentElite = state.currentElite === 'A' ? 'B' : 'A';
+                }
+            }
+
+            // Natural drift toward center (weak)
+            state.population.forEach(p => {
+                if (!p.locked) {
+                    p.opinion += (0.5 - p.opinion) * 0.01;
+                }
+            });
+        }
+
+        // Draw main visualization
+        function drawMainCanvas() {
+            const width = mainCanvas.width / (window.devicePixelRatio || 1);
+            const height = mainCanvas.height / (window.devicePixelRatio || 1);
+
+            mainCtx.clearRect(0, 0, width, height);
+
+            // Background gradient
+            const bgGrad = mainCtx.createLinearGradient(0, 0, width, 0);
+            bgGrad.addColorStop(0, 'rgba(78, 205, 196, 0.1)');
+            bgGrad.addColorStop(0.5, 'rgba(50, 50, 80, 0.1)');
+            bgGrad.addColorStop(1, 'rgba(233, 69, 96, 0.1)');
+            mainCtx.fillStyle = bgGrad;
+            mainCtx.fillRect(0, 0, width, height);
+
+            // Draw histogram
+            const bins = 50;
+            const binWidth = width / bins;
+            const histogram = new Array(bins).fill(0);
+
+            state.population.forEach(p => {
+                const binIndex = Math.min(bins - 1, Math.floor(p.opinion * bins));
+                histogram[binIndex]++;
+            });
+
+            const maxCount = Math.max(...histogram, 1);
+
+            // Draw semi-lock regions in competing mode
+            if (state.mode === 'competing') {
+                mainCtx.fillStyle = 'rgba(100, 255, 218, 0.15)';
+                mainCtx.fillRect(0, 0, width * 0.2, height);
+                mainCtx.fillRect(width * 0.8, 0, width * 0.2, height);
+            }
+
+            // Draw histogram bars
+            histogram.forEach((count, i) => {
+                const barHeight = (count / maxCount) * (height - 60);
+                const x = i * binWidth;
+                const y = height - 30 - barHeight;
+
+                const gradient = mainCtx.createLinearGradient(x, y, x, height - 30);
+                gradient.addColorStop(0, '#ffd93d');
+                gradient.addColorStop(1, 'rgba(255, 217, 61, 0.3)');
+
+                mainCtx.fillStyle = gradient;
+                mainCtx.fillRect(x + 1, y, binWidth - 2, barHeight);
+            });
+
+            // Draw elite targets
+            const targetAX = width * 0.85;
+            const targetBX = width * 0.15;
+
+            // Elite A target (always shown)
+            mainCtx.beginPath();
+            mainCtx.moveTo(targetAX, 20);
+            mainCtx.lineTo(targetAX, height - 30);
+            mainCtx.strokeStyle = state.currentElite === 'A' ? '#e94560' : 'rgba(233, 69, 96, 0.3)';
+            mainCtx.lineWidth = state.currentElite === 'A' ? 3 : 1;
+            mainCtx.setLineDash(state.currentElite === 'A' ? [] : [5, 5]);
+            mainCtx.stroke();
+            mainCtx.setLineDash([]);
+
+            // Elite B target (in competing mode)
+            if (state.mode === 'competing') {
+                mainCtx.beginPath();
+                mainCtx.moveTo(targetBX, 20);
+                mainCtx.lineTo(targetBX, height - 30);
+                mainCtx.strokeStyle = state.currentElite === 'B' ? '#4ecdc4' : 'rgba(78, 205, 196, 0.3)';
+                mainCtx.lineWidth = state.currentElite === 'B' ? 3 : 1;
+                mainCtx.setLineDash(state.currentElite === 'B' ? [] : [5, 5]);
+                mainCtx.stroke();
+                mainCtx.setLineDash([]);
+            }
+
+            // Draw axis
+            mainCtx.strokeStyle = '#8892b0';
+            mainCtx.lineWidth = 1;
+            mainCtx.beginPath();
+            mainCtx.moveTo(0, height - 30);
+            mainCtx.lineTo(width, height - 30);
+            mainCtx.stroke();
+
+            // Labels
+            mainCtx.fillStyle = '#ccd6f6';
+            mainCtx.font = '12px Segoe UI';
+            mainCtx.textAlign = 'center';
+            mainCtx.fillText('Left', 30, height - 10);
+            mainCtx.fillText('Center', width / 2, height - 10);
+            mainCtx.fillText('Right', width - 30, height - 10);
+        }
+
+        // Draw timeline
+        function drawTimeline() {
+            const width = timelineCanvas.width / (window.devicePixelRatio || 1);
+            const height = timelineCanvas.height / (window.devicePixelRatio || 1);
+
+            timelineCtx.clearRect(0, 0, width, height);
+
+            if (state.polarizationHistory.length < 2) return;
+
+            // Draw grid
+            timelineCtx.strokeStyle = 'rgba(136, 146, 176, 0.2)';
+            timelineCtx.lineWidth = 1;
+            for (let i = 0; i <= 4; i++) {
+                const y = height - 20 - (i * (height - 40) / 4);
+                timelineCtx.beginPath();
+                timelineCtx.moveTo(40, y);
+                timelineCtx.lineTo(width - 10, y);
+                timelineCtx.stroke();
+            }
+
+            // Draw polarization line
+            const maxHistory = 200;
+            const history = state.polarizationHistory.slice(-maxHistory);
+            const stepWidth = (width - 50) / maxHistory;
+
+            timelineCtx.beginPath();
+            timelineCtx.strokeStyle = '#e94560';
+            timelineCtx.lineWidth = 2;
+
+            history.forEach((p, i) => {
+                const x = 40 + i * stepWidth;
+                const y = height - 20 - (p * (height - 40));
+                if (i === 0) {
+                    timelineCtx.moveTo(x, y);
+                } else {
+                    timelineCtx.lineTo(x, y);
+                }
+            });
+            timelineCtx.stroke();
+
+            // Fill under curve
+            timelineCtx.lineTo(40 + (history.length - 1) * stepWidth, height - 20);
+            timelineCtx.lineTo(40, height - 20);
+            timelineCtx.closePath();
+            timelineCtx.fillStyle = 'rgba(233, 69, 96, 0.2)';
+            timelineCtx.fill();
+
+            // Y-axis labels
+            timelineCtx.fillStyle = '#8892b0';
+            timelineCtx.font = '10px Segoe UI';
+            timelineCtx.textAlign = 'right';
+            timelineCtx.fillText('1.0', 35, 25);
+            timelineCtx.fillText('0.5', 35, height / 2);
+            timelineCtx.fillText('0.0', 35, height - 15);
+        }
+
+        // Update info panel
+        function updateInfo() {
+            const params = getParams();
+            const polarization = calculatePolarization(state.population);
+            let text = '';
+
+            if (state.mode === 'single') {
+                if (params.persuasionCost < 0.5) {
+                    text = `With very low AI persuasion costs (${params.persuasionCost}), the single elite can aggressively push the population toward extreme positions. This demonstrates the "polarization pull" effect - optimal strategy becomes maximal polarization.`;
+                } else if (params.persuasionCost < 1) {
+                    text = `Moderate persuasion costs create incentives for strategic targeting. The elite focuses resources on persuadable center-leaning individuals, gradually shifting the distribution.`;
+                } else {
+                    text = `High persuasion costs limit the elite's ability to manipulate opinion distributions. The natural tendency toward centrism partially counteracts polarization efforts.`;
+                }
+            } else {
+                if (polarization > 0.6) {
+                    text = `Competing elites have created a highly polarized landscape. Notice the "semi-lock" regions at the extremes where opinions become resistant to rival manipulation.`;
+                } else {
+                    text = `Power transitions between elites create oscillating pressure on opinion distributions. Each elite builds loyal bases while competing for the center.`;
+                }
+            }
+
+            document.getElementById('infoText').textContent = text;
+        }
+
+        // Main simulation loop
+        function simulate() {
+            if (!state.running) return;
+
+            persuasionStep();
+            state.timeStep++;
+
+            const polarization = calculatePolarization(state.population);
+            state.polarizationHistory.push(polarization);
+
+            // Update UI
+            document.getElementById('timeStep').textContent = state.timeStep;
+            document.getElementById('polarizationIndex').textContent = polarization.toFixed(2);
+            document.getElementById('currentElite').textContent = state.currentElite;
+
+            drawMainCanvas();
+            drawTimeline();
+
+            if (state.timeStep % 20 === 0) {
+                updateInfo();
+            }
+
+            state.animationId = requestAnimationFrame(simulate);
+        }
+
+        // Reset simulation
+        function reset() {
+            state.running = false;
+            if (state.animationId) {
+                cancelAnimationFrame(state.animationId);
+            }
+
+            const params = getParams();
+            state.timeStep = 0;
+            state.population = initializePopulation(params.populationSize, params.initialSpread);
+            state.polarizationHistory = [calculatePolarization(state.population)];
+            state.currentElite = 'A';
+
+            document.getElementById('timeStep').textContent = '0';
+            document.getElementById('polarizationIndex').textContent = '0.00';
+            document.getElementById('currentElite').textContent = 'A';
+            document.getElementById('startBtn').textContent = 'Start Simulation';
+
+            drawMainCanvas();
+            drawTimeline();
+            updateInfo();
+        }
+
+        // Event Listeners
+        document.getElementById('startBtn').addEventListener('click', () => {
+            if (state.running) {
+                state.running = false;
+                document.getElementById('startBtn').textContent = 'Start Simulation';
+            } else {
+                state.running = true;
+                document.getElementById('startBtn').textContent = 'Pause';
+                simulate();
+            }
+        });
+
+        document.getElementById('resetBtn').addEventListener('click', reset);
+
+        // Mode buttons
+        document.querySelectorAll('.mode-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                state.mode = btn.dataset.mode;
+
+                const competingControls = document.getElementById('competingControls');
+                competingControls.style.display = state.mode === 'competing' ? 'block' : 'none';
+
+                reset();
+            });
+        });
+
+        // Load scenario
+        function loadScenario(scenarioId) {
+            const scenario = scenarios[scenarioId];
+            if (!scenario) return;
+
+            // Update description
+            document.getElementById('scenarioDescription').innerHTML =
+                `<span class="scenario-badge">${scenario.name}</span><br>${scenario.description}`;
+
+            if (scenario.params === null) return; // Custom - don't change anything
+
+            // Update mode
+            if (scenario.mode) {
+                state.mode = scenario.mode;
+                document.querySelectorAll('.mode-btn').forEach(btn => {
+                    btn.classList.toggle('active', btn.dataset.mode === scenario.mode);
+                });
+                document.getElementById('competingControls').style.display =
+                    scenario.mode === 'competing' ? 'block' : 'none';
+            }
+
+            // Update sliders
+            const params = scenario.params;
+            const updates = [
+                { id: 'persuasionCost', value: params.persuasionCost, display: 'persuasionCostValue', format: v => v.toFixed(1) },
+                { id: 'persuasionReach', value: params.persuasionReach, display: 'persuasionReachValue', format: v => v + '%' },
+                { id: 'messageIntensity', value: params.messageIntensity, display: 'messageIntensityValue', format: v => v.toFixed(2) },
+                { id: 'initialSpread', value: params.initialSpread, display: 'initialSpreadValue', format: v => v.toFixed(2) },
+                { id: 'resistance', value: params.resistance, display: 'resistanceValue', format: v => v.toFixed(2) },
+                { id: 'populationSize', value: params.populationSize, display: 'populationSizeValue', format: v => v },
+                { id: 'transitionRate', value: params.transitionRate, display: 'transitionRateValue', format: v => v.toFixed(2) },
+                { id: 'eliteBStrength', value: params.eliteBStrength, display: 'eliteBStrengthValue', format: v => v.toFixed(2) }
+            ];
+
+            updates.forEach(({ id, value, display, format }) => {
+                const slider = document.getElementById(id);
+                if (slider) {
+                    slider.value = value;
+                    document.getElementById(display).textContent = format(value);
+                }
+            });
+
+            // Reset simulation with new params
+            reset();
+        }
+
+        // Scenario select event
+        document.getElementById('scenarioSelect').addEventListener('change', (e) => {
+            loadScenario(e.target.value);
+        });
+
+        // Slider value updates
+        const sliders = [
+            { id: 'persuasionCost', display: 'persuasionCostValue', format: v => v.toFixed(1) },
+            { id: 'persuasionReach', display: 'persuasionReachValue', format: v => v + '%' },
+            { id: 'messageIntensity', display: 'messageIntensityValue', format: v => v.toFixed(2) },
+            { id: 'initialSpread', display: 'initialSpreadValue', format: v => v.toFixed(2) },
+            { id: 'resistance', display: 'resistanceValue', format: v => v.toFixed(2) },
+            { id: 'populationSize', display: 'populationSizeValue', format: v => v },
+            { id: 'transitionRate', display: 'transitionRateValue', format: v => v.toFixed(2) },
+            { id: 'eliteBStrength', display: 'eliteBStrengthValue', format: v => v.toFixed(2) }
+        ];
+
+        sliders.forEach(({ id, display, format }) => {
+            const slider = document.getElementById(id);
+            if (slider) {
+                slider.addEventListener('input', () => {
+                    document.getElementById(display).textContent = format(parseFloat(slider.value));
+                    // Reset to custom when user manually changes settings
+                    document.getElementById('scenarioSelect').value = 'custom';
+                    document.getElementById('scenarioDescription').textContent =
+                        'Custom settings - you\'ve modified the parameters manually.';
+                });
+            }
+        });
+
+        // Initialize
+        window.addEventListener('resize', () => {
+            setupCanvas(mainCanvas, mainCtx);
+            setupCanvas(timelineCanvas, timelineCtx);
+            drawMainCanvas();
+            drawTimeline();
+        });
+
+        setupCanvas(mainCanvas, mainCtx);
+        setupCanvas(timelineCanvas, timelineCtx);
+        reset();
+    </script>
+</body>
+</html>
