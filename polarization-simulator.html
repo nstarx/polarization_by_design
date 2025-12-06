@@ -111,6 +111,69 @@
             font-size: 0.9rem;
         }
 
+        .speed-control {
+            padding: 5px 0;
+        }
+
+        .speed-control input[type="range"] {
+            width: 100%;
+            height: 6px;
+            border-radius: 3px;
+            background: linear-gradient(to right, #4ecdc4, #ffd93d, #e94560);
+            outline: none;
+            -webkit-appearance: none;
+        }
+
+        .speed-control input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: #fff;
+            cursor: pointer;
+            border: 3px solid #64ffda;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+        }
+
+        .speed-labels {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 8px;
+            font-size: 0.75rem;
+            color: #8892b0;
+        }
+
+        .speed-value {
+            font-size: 1rem;
+            font-weight: bold;
+            color: #64ffda;
+        }
+
+        .viz-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+        }
+
+        .viz-btn {
+            flex: 1;
+            min-width: 60px;
+            padding: 8px 6px;
+            border: 1px solid #64ffda;
+            background: transparent;
+            color: #64ffda;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.75rem;
+            transition: all 0.3s ease;
+        }
+
+        .viz-btn:hover, .viz-btn.active {
+            background: #64ffda;
+            color: #1a1a2e;
+        }
+
         .mode-buttons {
             display: flex;
             gap: 10px;
@@ -359,6 +422,29 @@
 
         <div class="main-grid">
             <div class="controls">
+                <div class="control-group">
+                    <h3>Simulation Speed</h3>
+                    <div class="speed-control">
+                        <input type="range" id="simSpeed" min="1" max="10" step="1" value="10">
+                        <div class="speed-labels">
+                            <span>Fast</span>
+                            <span class="speed-value" id="speedValue">10x</span>
+                            <span>Slow</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="control-group">
+                    <h3>Visualization Style</h3>
+                    <div class="viz-buttons" id="vizButtons">
+                        <button class="viz-btn" data-viz="particles">Particles</button>
+                        <button class="viz-btn" data-viz="area">Area</button>
+                        <button class="viz-btn" data-viz="heatmap">Heatmap</button>
+                        <button class="viz-btn" data-viz="lollipop">Lollipop</button>
+                        <button class="viz-btn active" data-viz="histogram">Histogram</button>
+                    </div>
+                </div>
+
                 <div class="control-group scenarios-group">
                     <h3>Template Scenarios</h3>
                     <select class="scenario-select" id="scenarioSelect">
@@ -658,11 +744,14 @@
         const state = {
             running: false,
             mode: 'single',
+            vizType: 'histogram',
+            speed: 10,
             timeStep: 0,
             population: [],
             polarizationHistory: [],
             currentElite: 'A',
-            animationId: null
+            animationId: null,
+            lastFrameTime: 0
         };
 
         // DOM Elements
@@ -803,13 +892,13 @@
 
             // Background gradient
             const bgGrad = mainCtx.createLinearGradient(0, 0, width, 0);
-            bgGrad.addColorStop(0, 'rgba(78, 205, 196, 0.1)');
-            bgGrad.addColorStop(0.5, 'rgba(50, 50, 80, 0.1)');
-            bgGrad.addColorStop(1, 'rgba(233, 69, 96, 0.1)');
+            bgGrad.addColorStop(0, 'rgba(78, 205, 196, 0.08)');
+            bgGrad.addColorStop(0.5, 'rgba(30, 30, 60, 0.08)');
+            bgGrad.addColorStop(1, 'rgba(233, 69, 96, 0.08)');
             mainCtx.fillStyle = bgGrad;
             mainCtx.fillRect(0, 0, width, height);
 
-            // Draw histogram
+            // Calculate histogram data for all viz types
             const bins = 50;
             const binWidth = width / bins;
             const histogram = new Array(bins).fill(0);
@@ -823,30 +912,227 @@
 
             // Draw semi-lock regions in competing mode
             if (state.mode === 'competing') {
-                mainCtx.fillStyle = 'rgba(100, 255, 218, 0.15)';
+                mainCtx.fillStyle = 'rgba(100, 255, 218, 0.12)';
                 mainCtx.fillRect(0, 0, width * 0.2, height);
                 mainCtx.fillRect(width * 0.8, 0, width * 0.2, height);
             }
 
-            // Draw histogram bars
+            // Draw based on visualization type
+            switch (state.vizType) {
+                case 'particles':
+                    drawParticles(width, height);
+                    break;
+                case 'area':
+                    drawAreaChart(width, height, histogram, maxCount, bins, binWidth);
+                    break;
+                case 'heatmap':
+                    drawHeatmap(width, height, histogram, maxCount, bins, binWidth);
+                    break;
+                case 'lollipop':
+                    drawLollipop(width, height, histogram, maxCount, bins, binWidth);
+                    break;
+                case 'histogram':
+                default:
+                    drawHistogram(width, height, histogram, maxCount, bins, binWidth);
+                    break;
+            }
+
+            // Draw elite targets
+            drawEliteTargets(width, height);
+
+            // Draw axis and labels
+            drawAxis(width, height);
+        }
+
+        // Particles visualization
+        function drawParticles(width, height) {
+            state.population.forEach((p, i) => {
+                const x = p.opinion * width;
+                const y = 40 + (i % 20) * ((height - 80) / 20) + Math.sin(i * 0.5 + state.timeStep * 0.05) * 10;
+
+                // Color based on position
+                let color;
+                if (p.opinion < 0.4) {
+                    color = `rgba(78, 205, 196, ${0.6 + p.opinion * 0.5})`;
+                } else if (p.opinion > 0.6) {
+                    color = `rgba(233, 69, 96, ${0.6 + (1 - p.opinion) * 0.5})`;
+                } else {
+                    color = `rgba(255, 217, 61, 0.7)`;
+                }
+
+                mainCtx.beginPath();
+                mainCtx.arc(x, y, p.locked ? 4 : 3, 0, Math.PI * 2);
+                mainCtx.fillStyle = color;
+                mainCtx.fill();
+
+                if (p.locked) {
+                    mainCtx.strokeStyle = '#64ffda';
+                    mainCtx.lineWidth = 1;
+                    mainCtx.stroke();
+                }
+            });
+        }
+
+        // Area chart visualization
+        function drawAreaChart(width, height, histogram, maxCount, bins, binWidth) {
+            mainCtx.beginPath();
+            mainCtx.moveTo(0, height - 30);
+
+            // Smooth curve using bezier
+            const points = histogram.map((count, i) => ({
+                x: i * binWidth + binWidth / 2,
+                y: height - 30 - (count / maxCount) * (height - 70)
+            }));
+
+            mainCtx.lineTo(points[0].x, points[0].y);
+
+            for (let i = 1; i < points.length; i++) {
+                const xc = (points[i].x + points[i - 1].x) / 2;
+                const yc = (points[i].y + points[i - 1].y) / 2;
+                mainCtx.quadraticCurveTo(points[i - 1].x, points[i - 1].y, xc, yc);
+            }
+            mainCtx.lineTo(points[points.length - 1].x, points[points.length - 1].y);
+            mainCtx.lineTo(width, height - 30);
+            mainCtx.closePath();
+
+            // Gradient fill
+            const gradient = mainCtx.createLinearGradient(0, 0, width, 0);
+            gradient.addColorStop(0, 'rgba(78, 205, 196, 0.6)');
+            gradient.addColorStop(0.5, 'rgba(255, 217, 61, 0.6)');
+            gradient.addColorStop(1, 'rgba(233, 69, 96, 0.6)');
+            mainCtx.fillStyle = gradient;
+            mainCtx.fill();
+
+            // Draw line on top
+            mainCtx.beginPath();
+            mainCtx.moveTo(points[0].x, points[0].y);
+            for (let i = 1; i < points.length; i++) {
+                const xc = (points[i].x + points[i - 1].x) / 2;
+                const yc = (points[i].y + points[i - 1].y) / 2;
+                mainCtx.quadraticCurveTo(points[i - 1].x, points[i - 1].y, xc, yc);
+            }
+            mainCtx.lineTo(points[points.length - 1].x, points[points.length - 1].y);
+            mainCtx.strokeStyle = '#fff';
+            mainCtx.lineWidth = 2;
+            mainCtx.stroke();
+        }
+
+        // Heatmap visualization
+        function drawHeatmap(width, height, histogram, maxCount, bins, binWidth) {
+            const barHeight = height - 60;
+
+            histogram.forEach((count, i) => {
+                const intensity = count / maxCount;
+                const x = i * binWidth;
+
+                // Create vertical gradient for each column
+                for (let row = 0; row < 20; row++) {
+                    const rowHeight = barHeight / 20;
+                    const y = 30 + row * rowHeight;
+                    const rowIntensity = intensity * (1 - row / 25);
+
+                    let r, g, b;
+                    if (i < bins * 0.4) {
+                        // Left side - cyan
+                        r = 78; g = 205; b = 196;
+                    } else if (i > bins * 0.6) {
+                        // Right side - red
+                        r = 233; g = 69; b = 96;
+                    } else {
+                        // Center - yellow
+                        r = 255; g = 217; b = 61;
+                    }
+
+                    mainCtx.fillStyle = `rgba(${r}, ${g}, ${b}, ${rowIntensity * 0.8})`;
+                    mainCtx.fillRect(x, y, binWidth, rowHeight);
+                }
+            });
+
+            // Add glow effect for high density areas
+            histogram.forEach((count, i) => {
+                if (count > maxCount * 0.5) {
+                    const x = i * binWidth + binWidth / 2;
+                    const intensity = count / maxCount;
+                    const gradient = mainCtx.createRadialGradient(x, height / 2, 0, x, height / 2, 50);
+                    gradient.addColorStop(0, `rgba(255, 255, 255, ${intensity * 0.3})`);
+                    gradient.addColorStop(1, 'rgba(255, 255, 255, 0)');
+                    mainCtx.fillStyle = gradient;
+                    mainCtx.fillRect(x - 50, 30, 100, barHeight);
+                }
+            });
+        }
+
+        // Lollipop visualization
+        function drawLollipop(width, height, histogram, maxCount, bins, binWidth) {
+            histogram.forEach((count, i) => {
+                const barHeight = (count / maxCount) * (height - 70);
+                const x = i * binWidth + binWidth / 2;
+                const y = height - 30 - barHeight;
+
+                // Determine color based on position
+                let color;
+                if (i < bins * 0.4) {
+                    color = '#4ecdc4';
+                } else if (i > bins * 0.6) {
+                    color = '#e94560';
+                } else {
+                    color = '#ffd93d';
+                }
+
+                // Draw stem
+                mainCtx.beginPath();
+                mainCtx.moveTo(x, height - 30);
+                mainCtx.lineTo(x, y);
+                mainCtx.strokeStyle = color;
+                mainCtx.lineWidth = 2;
+                mainCtx.stroke();
+
+                // Draw circle
+                mainCtx.beginPath();
+                mainCtx.arc(x, y, 5 + (count / maxCount) * 5, 0, Math.PI * 2);
+                mainCtx.fillStyle = color;
+                mainCtx.fill();
+                mainCtx.strokeStyle = '#fff';
+                mainCtx.lineWidth = 1;
+                mainCtx.stroke();
+            });
+        }
+
+        // Histogram visualization (original)
+        function drawHistogram(width, height, histogram, maxCount, bins, binWidth) {
             histogram.forEach((count, i) => {
                 const barHeight = (count / maxCount) * (height - 60);
                 const x = i * binWidth;
                 const y = height - 30 - barHeight;
 
+                // Color based on position
+                let color1, color2;
+                if (i < bins * 0.4) {
+                    color1 = '#4ecdc4';
+                    color2 = 'rgba(78, 205, 196, 0.3)';
+                } else if (i > bins * 0.6) {
+                    color1 = '#e94560';
+                    color2 = 'rgba(233, 69, 96, 0.3)';
+                } else {
+                    color1 = '#ffd93d';
+                    color2 = 'rgba(255, 217, 61, 0.3)';
+                }
+
                 const gradient = mainCtx.createLinearGradient(x, y, x, height - 30);
-                gradient.addColorStop(0, '#ffd93d');
-                gradient.addColorStop(1, 'rgba(255, 217, 61, 0.3)');
+                gradient.addColorStop(0, color1);
+                gradient.addColorStop(1, color2);
 
                 mainCtx.fillStyle = gradient;
                 mainCtx.fillRect(x + 1, y, binWidth - 2, barHeight);
             });
+        }
 
-            // Draw elite targets
+        // Draw elite target lines
+        function drawEliteTargets(width, height) {
             const targetAX = width * 0.85;
             const targetBX = width * 0.15;
 
-            // Elite A target (always shown)
+            // Elite A target
             mainCtx.beginPath();
             mainCtx.moveTo(targetAX, 20);
             mainCtx.lineTo(targetAX, height - 30);
@@ -867,8 +1153,10 @@
                 mainCtx.stroke();
                 mainCtx.setLineDash([]);
             }
+        }
 
-            // Draw axis
+        // Draw axis and labels
+        function drawAxis(width, height) {
             mainCtx.strokeStyle = '#8892b0';
             mainCtx.lineWidth = 1;
             mainCtx.beginPath();
@@ -876,7 +1164,6 @@
             mainCtx.lineTo(width, height - 30);
             mainCtx.stroke();
 
-            // Labels
             mainCtx.fillStyle = '#ccd6f6';
             mainCtx.font = '12px Segoe UI';
             mainCtx.textAlign = 'center';
@@ -967,9 +1254,20 @@
         }
 
         // Main simulation loop
-        function simulate() {
+        function simulate(timestamp) {
             if (!state.running) return;
 
+            // Speed control: 10 = very slow (2 seconds per step), 1 = fast
+            const delays = [16, 30, 60, 120, 250, 500, 800, 1200, 1600, 2000];
+            const delay = delays[state.speed - 1];
+
+            if (timestamp - state.lastFrameTime < delay) {
+                state.animationId = requestAnimationFrame(simulate);
+                return;
+            }
+            state.lastFrameTime = timestamp;
+
+            // Run one step
             persuasionStep();
             state.timeStep++;
 
@@ -1027,6 +1325,22 @@
         });
 
         document.getElementById('resetBtn').addEventListener('click', reset);
+
+        // Speed slider
+        document.getElementById('simSpeed').addEventListener('input', (e) => {
+            state.speed = parseInt(e.target.value);
+            document.getElementById('speedValue').textContent = state.speed + 'x';
+        });
+
+        // Visualization buttons
+        document.querySelectorAll('.viz-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.viz-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                state.vizType = btn.dataset.viz;
+                drawMainCanvas();
+            });
+        });
 
         // Mode buttons
         document.querySelectorAll('.mode-btn').forEach(btn => {

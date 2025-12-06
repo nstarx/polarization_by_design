@@ -1,0 +1,1120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI & The Moral Foundation - Wealth Distribution Simulator</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #24243e 100%);
+            min-height: 100vh;
+            color: #e0e0e0;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        h1 {
+            font-size: 2.2rem;
+            background: linear-gradient(90deg, #f093fb, #f5576c);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            color: #a8a8b3;
+            font-size: 1rem;
+            max-width: 700px;
+            margin: 0 auto;
+            line-height: 1.6;
+        }
+
+        .main-grid {
+            display: grid;
+            grid-template-columns: 320px 1fr;
+            gap: 20px;
+        }
+
+        .controls {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            padding: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            height: fit-content;
+        }
+
+        .control-group {
+            margin-bottom: 20px;
+        }
+
+        .control-group h3 {
+            color: #f5576c;
+            margin-bottom: 12px;
+            font-size: 0.95rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .control-group h3 svg {
+            width: 18px;
+            height: 18px;
+        }
+
+        .control-item {
+            margin-bottom: 12px;
+        }
+
+        .control-item label {
+            display: block;
+            margin-bottom: 5px;
+            color: #ccd6f6;
+            font-size: 0.85rem;
+        }
+
+        .control-item input[type="range"] {
+            width: 100%;
+            height: 6px;
+            border-radius: 3px;
+            background: #233554;
+            outline: none;
+            -webkit-appearance: none;
+        }
+
+        .control-item input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background: #f5576c;
+            cursor: pointer;
+            border: 2px solid #fff;
+        }
+
+        .value-display {
+            text-align: right;
+            color: #f5576c;
+            font-weight: bold;
+            font-size: 0.85rem;
+        }
+
+        .policy-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .policy-btn {
+            padding: 10px 12px;
+            border: 1px solid rgba(245, 87, 108, 0.5);
+            background: transparent;
+            color: #f5576c;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            text-align: left;
+            transition: all 0.3s ease;
+        }
+
+        .policy-btn:hover {
+            background: rgba(245, 87, 108, 0.15);
+        }
+
+        .policy-btn.active {
+            background: rgba(245, 87, 108, 0.25);
+            border-color: #f5576c;
+        }
+
+        .policy-btn .policy-name {
+            font-weight: bold;
+            display: block;
+            margin-bottom: 3px;
+        }
+
+        .policy-btn .policy-desc {
+            font-size: 0.7rem;
+            color: #a8a8b3;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+        }
+
+        .action-btn {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .start-btn {
+            background: linear-gradient(135deg, #f093fb, #f5576c);
+            color: #fff;
+        }
+
+        .reset-btn {
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .visualization {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            padding: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .viz-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .viz-header h2 {
+            color: #ccd6f6;
+            font-size: 1.2rem;
+        }
+
+        .stats {
+            display: flex;
+            gap: 25px;
+            flex-wrap: wrap;
+        }
+
+        .stat {
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 1.3rem;
+            font-weight: bold;
+            color: #f093fb;
+        }
+
+        .stat-label {
+            font-size: 0.7rem;
+            color: #8892b0;
+        }
+
+        .canvas-container {
+            position: relative;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 10px;
+            overflow: hidden;
+            margin-bottom: 15px;
+        }
+
+        canvas {
+            display: block;
+            width: 100%;
+        }
+
+        .philosophy-panel {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .philosophy-card {
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 10px;
+            padding: 15px;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .philosophy-card h4 {
+            color: #f5576c;
+            font-size: 0.9rem;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .philosophy-card .status {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-size: 0.7rem;
+            margin-left: auto;
+        }
+
+        .status.intact { background: rgba(100, 255, 150, 0.2); color: #64ff96; }
+        .status.strained { background: rgba(255, 217, 61, 0.2); color: #ffd93d; }
+        .status.violated { background: rgba(255, 100, 100, 0.2); color: #ff6464; }
+
+        .philosophy-card p {
+            font-size: 0.8rem;
+            color: #a8a8b3;
+            line-height: 1.5;
+        }
+
+        .meter {
+            height: 6px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 3px;
+            margin-top: 10px;
+            overflow: hidden;
+        }
+
+        .meter-fill {
+            height: 100%;
+            border-radius: 3px;
+            transition: width 0.3s ease;
+        }
+
+        .timeline-section {
+            margin-top: 20px;
+        }
+
+        .timeline-section h3 {
+            color: #ccd6f6;
+            font-size: 1rem;
+            margin-bottom: 10px;
+        }
+
+        .info-panel {
+            margin-top: 20px;
+            padding: 15px;
+            background: rgba(240, 147, 251, 0.1);
+            border-radius: 10px;
+            border: 1px solid rgba(240, 147, 251, 0.2);
+        }
+
+        .info-panel h4 {
+            color: #f093fb;
+            margin-bottom: 8px;
+            font-size: 0.95rem;
+        }
+
+        .info-panel p {
+            font-size: 0.85rem;
+            line-height: 1.6;
+            color: #a8b2d1;
+        }
+
+        .window-indicator {
+            margin-top: 15px;
+            padding: 12px;
+            border-radius: 8px;
+            text-align: center;
+            font-weight: bold;
+        }
+
+        .window-indicator.open {
+            background: rgba(100, 255, 150, 0.15);
+            border: 1px solid rgba(100, 255, 150, 0.3);
+            color: #64ff96;
+        }
+
+        .window-indicator.closing {
+            background: rgba(255, 217, 61, 0.15);
+            border: 1px solid rgba(255, 217, 61, 0.3);
+            color: #ffd93d;
+        }
+
+        .window-indicator.closed {
+            background: rgba(255, 100, 100, 0.15);
+            border: 1px solid rgba(255, 100, 100, 0.3);
+            color: #ff6464;
+        }
+
+        @media (max-width: 900px) {
+            .main-grid {
+                grid-template-columns: 1fr;
+            }
+            .philosophy-panel {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>AI & The Moral Foundation of Society</h1>
+            <p class="subtitle">
+                Simulate how AI-driven wealth concentration affects the philosophical justifications for inequality.
+                Watch the tension between Rawls's social contract and Nozick's self-ownership as AI transforms labor into capital.
+            </p>
+        </header>
+
+        <div class="main-grid">
+            <div class="controls">
+                <div class="control-group">
+                    <h3>
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M9.813 15.904 9 18.75l-.813-2.846a4.5 4.5 0 0 0-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 0 0 3.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 0 0 3.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 0 0-3.09 3.09ZM18.259 8.715 18 9.75l-.259-1.035a3.375 3.375 0 0 0-2.455-2.456L14.25 6l1.036-.259a3.375 3.375 0 0 0 2.455-2.456L18 2.25l.259 1.035a3.375 3.375 0 0 0 2.456 2.456L21.75 6l-1.035.259a3.375 3.375 0 0 0-2.456 2.456Z" />
+                        </svg>
+                        AI Development
+                    </h3>
+                    <div class="control-item">
+                        <label>AI Capability Growth Rate</label>
+                        <input type="range" id="aiGrowth" min="1" max="20" step="1" value="10">
+                        <div class="value-display" id="aiGrowthValue">10%/year</div>
+                    </div>
+                    <div class="control-item">
+                        <label>Labor Displacement Speed</label>
+                        <input type="range" id="displacement" min="1" max="15" step="1" value="5">
+                        <div class="value-display" id="displacementValue">5%/year</div>
+                    </div>
+                    <div class="control-item">
+                        <label>Data Extraction Rate</label>
+                        <input type="range" id="dataExtraction" min="0" max="100" step="5" value="60">
+                        <div class="value-display" id="dataExtractionValue">60%</div>
+                    </div>
+                </div>
+
+                <div class="control-group">
+                    <h3>
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 21v-8.25M15.75 21v-8.25M8.25 21v-8.25M3 9l9-6 9 6m-1.5 12V10.332A48.36 48.36 0 0 0 12 10c-2.59 0-5.134.202-7.5.582V21M3 21h18M12 6.75h.008v.008H12V6.75Z" />
+                        </svg>
+                        Policy Intervention
+                    </h3>
+                    <div class="policy-buttons">
+                        <button class="policy-btn active" data-policy="none">
+                            <span class="policy-name">No Intervention</span>
+                            <span class="policy-desc">Let market forces determine distribution</span>
+                        </button>
+                        <button class="policy-btn" data-policy="ubi">
+                            <span class="policy-name">Universal Basic Income</span>
+                            <span class="policy-desc">Redistribute AI profits to all citizens</span>
+                        </button>
+                        <button class="policy-btn" data-policy="ownership">
+                            <span class="policy-name">Distributed AI Ownership</span>
+                            <span class="policy-desc">Public/cooperative ownership of AI infrastructure</span>
+                        </button>
+                        <button class="policy-btn" data-policy="data-rights">
+                            <span class="policy-name">Data Ownership Rights</span>
+                            <span class="policy-desc">Compensate people for training data</span>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="control-group">
+                    <h3>
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M18 18.72a9.094 9.094 0 0 0 3.741-.479 3 3 0 0 0-4.682-2.72m.94 3.198.001.031c0 .225-.012.447-.037.666A11.944 11.944 0 0 1 12 21c-2.17 0-4.207-.576-5.963-1.584A6.062 6.062 0 0 1 6 18.719m12 0a5.971 5.971 0 0 0-.941-3.197m0 0A5.995 5.995 0 0 0 12 12.75a5.995 5.995 0 0 0-5.058 2.772m0 0a3 3 0 0 0-4.681 2.72 8.986 8.986 0 0 0 3.74.477m.94-3.197a5.971 5.971 0 0 0-.94 3.197M15 6.75a3 3 0 1 1-6 0 3 3 0 0 1 6 0Zm6 3a2.25 2.25 0 1 1-4.5 0 2.25 2.25 0 0 1 4.5 0Zm-13.5 0a2.25 2.25 0 1 1-4.5 0 2.25 2.25 0 0 1 4.5 0Z" />
+                        </svg>
+                        Population Settings
+                    </h3>
+                    <div class="control-item">
+                        <label>Initial Inequality (Gini)</label>
+                        <input type="range" id="initialGini" min="20" max="50" step="2" value="35">
+                        <div class="value-display" id="initialGiniValue">0.35</div>
+                    </div>
+                    <div class="control-item">
+                        <label>Social Mobility</label>
+                        <input type="range" id="mobility" min="5" max="50" step="5" value="25">
+                        <div class="value-display" id="mobilityValue">25%</div>
+                    </div>
+                </div>
+
+                <div class="action-buttons">
+                    <button class="action-btn start-btn" id="startBtn">Start Simulation</button>
+                    <button class="action-btn reset-btn" id="resetBtn">Reset</button>
+                </div>
+            </div>
+
+            <div class="visualization">
+                <div class="viz-header">
+                    <h2>Wealth Distribution Over Time</h2>
+                    <div class="stats">
+                        <div class="stat">
+                            <div class="stat-value" id="yearDisplay">2024</div>
+                            <div class="stat-label">Year</div>
+                        </div>
+                        <div class="stat">
+                            <div class="stat-value" id="giniDisplay">0.35</div>
+                            <div class="stat-label">Gini Index</div>
+                        </div>
+                        <div class="stat">
+                            <div class="stat-value" id="top1Display">20%</div>
+                            <div class="stat-label">Top 1% Share</div>
+                        </div>
+                        <div class="stat">
+                            <div class="stat-value" id="meritDisplay">85%</div>
+                            <div class="stat-label">Meritocracy Belief</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="canvas-container">
+                    <canvas id="mainCanvas" width="800" height="350"></canvas>
+                </div>
+
+                <div class="window-indicator open" id="windowIndicator">
+                    Window for Institutional Change: OPEN
+                </div>
+
+                <div class="philosophy-panel">
+                    <div class="philosophy-card" id="rawlsCard">
+                        <h4>
+                            Rawls: Difference Principle
+                            <span class="status intact" id="rawlsStatus">Intact</span>
+                        </h4>
+                        <p id="rawlsText">Inequalities benefit the least advantaged. The social contract remains viable.</p>
+                        <div class="meter">
+                            <div class="meter-fill" id="rawlsMeter" style="width: 90%; background: linear-gradient(90deg, #64ff96, #4ecdc4);"></div>
+                        </div>
+                    </div>
+
+                    <div class="philosophy-card" id="nozickCard">
+                        <h4>
+                            Nozick: Self-Ownership
+                            <span class="status intact" id="nozickStatus">Intact</span>
+                        </h4>
+                        <p id="nozickText">Voluntary exchanges respected. People own the fruits of their labor.</p>
+                        <div class="meter">
+                            <div class="meter-fill" id="nozickMeter" style="width: 85%; background: linear-gradient(90deg, #64ff96, #4ecdc4);"></div>
+                        </div>
+                    </div>
+
+                    <div class="philosophy-card" id="meritCard">
+                        <h4>
+                            Folk Meritocracy
+                            <span class="status intact" id="meritStatus">Intact</span>
+                        </h4>
+                        <p id="meritText">Hard work and talent lead to success. The American Dream narrative holds.</p>
+                        <div class="meter">
+                            <div class="meter-fill" id="meritMeter" style="width: 85%; background: linear-gradient(90deg, #64ff96, #4ecdc4);"></div>
+                        </div>
+                    </div>
+
+                    <div class="philosophy-card" id="legitimacyCard">
+                        <h4>
+                            System Legitimacy
+                            <span class="status intact" id="legitimacyStatus">Stable</span>
+                        </h4>
+                        <p id="legitimacyText">People accept inequality as fair. Social cohesion maintained.</p>
+                        <div class="meter">
+                            <div class="meter-fill" id="legitimacyMeter" style="width: 80%; background: linear-gradient(90deg, #64ff96, #4ecdc4);"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="timeline-section">
+                    <h3>Gini Coefficient Over Time</h3>
+                    <canvas id="timelineCanvas" width="800" height="120"></canvas>
+                </div>
+
+                <div class="info-panel">
+                    <h4 id="infoTitle">The Philosophical Stakes</h4>
+                    <p id="infoText">
+                        Both Rawls and Nozick agreed that people cannot be mere means to an end.
+                        AI challenges this by extracting human creativity as training data without consent (violating Nozick)
+                        and concentrating wealth without benefiting the least advantaged (violating Rawls).
+                        Run the simulation to see how different scenarios affect these moral foundations.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // State
+        const state = {
+            running: false,
+            year: 2024,
+            policy: 'none',
+            population: [],
+            giniHistory: [],
+            animationId: null,
+
+            // Philosophical metrics (0-100)
+            rawlsScore: 90,
+            nozickScore: 85,
+            meritScore: 85,
+            legitimacyScore: 80,
+
+            // Economic metrics
+            gini: 0.35,
+            top1Share: 20,
+            laborShare: 60,
+            aiCapital: 10
+        };
+
+        // Canvas setup
+        const mainCanvas = document.getElementById('mainCanvas');
+        const mainCtx = mainCanvas.getContext('2d');
+        const timelineCanvas = document.getElementById('timelineCanvas');
+        const timelineCtx = timelineCanvas.getContext('2d');
+
+        function setupCanvas(canvas, ctx) {
+            const dpr = window.devicePixelRatio || 1;
+            const rect = canvas.getBoundingClientRect();
+            canvas.width = rect.width * dpr;
+            canvas.height = rect.height * dpr;
+            ctx.scale(dpr, dpr);
+            canvas.style.width = rect.width + 'px';
+            canvas.style.height = rect.height + 'px';
+        }
+
+        // Get parameters
+        function getParams() {
+            return {
+                aiGrowth: parseInt(document.getElementById('aiGrowth').value) / 100,
+                displacement: parseInt(document.getElementById('displacement').value) / 100,
+                dataExtraction: parseInt(document.getElementById('dataExtraction').value) / 100,
+                initialGini: parseInt(document.getElementById('initialGini').value) / 100,
+                mobility: parseInt(document.getElementById('mobility').value) / 100
+            };
+        }
+
+        // Initialize population with wealth distribution
+        function initPopulation() {
+            const params = getParams();
+            state.population = [];
+
+            // Create 500 individuals with Pareto-like distribution
+            for (let i = 0; i < 500; i++) {
+                const u = Math.random();
+                // Pareto distribution for wealth
+                const wealth = Math.pow(1 - u, -1 / (1 + params.initialGini * 3)) - 1;
+                const talent = Math.random();
+                const effort = 0.3 + Math.random() * 0.7;
+
+                state.population.push({
+                    wealth: wealth,
+                    talent: talent,
+                    effort: effort,
+                    hasAI: i < 5, // Top 1% owns AI
+                    displaced: false,
+                    dataExtracted: false
+                });
+            }
+
+            // Sort by wealth
+            state.population.sort((a, b) => b.wealth - a.wealth);
+
+            // Calculate initial Gini
+            state.gini = params.initialGini;
+            state.giniHistory = [state.gini];
+            state.top1Share = 20;
+            state.year = 2024;
+
+            // Reset philosophical scores
+            state.rawlsScore = 90;
+            state.nozickScore = 85;
+            state.meritScore = 85;
+            state.legitimacyScore = 80;
+        }
+
+        // Calculate Gini coefficient
+        function calculateGini() {
+            const sorted = [...state.population].sort((a, b) => a.wealth - b.wealth);
+            const n = sorted.length;
+            let sumNumerator = 0;
+            let sumWealth = 0;
+
+            sorted.forEach((p, i) => {
+                sumNumerator += (2 * (i + 1) - n - 1) * p.wealth;
+                sumWealth += p.wealth;
+            });
+
+            if (sumWealth === 0) return 0;
+            return sumNumerator / (n * sumWealth);
+        }
+
+        // Simulation step - reads parameters dynamically each step
+        function simulationStep() {
+            // Read current parameters (allows real-time changes)
+            const params = getParams();
+
+            // AI growth increases capital concentration
+            const aiOwners = state.population.filter(p => p.hasAI);
+            const nonAIOwners = state.population.filter(p => !p.hasAI);
+
+            // AI owners accumulate wealth exponentially based on current AI growth rate
+            aiOwners.forEach(p => {
+                p.wealth *= (1 + params.aiGrowth * 2);
+            });
+
+            // Labor displacement - rate can change mid-simulation
+            nonAIOwners.forEach(p => {
+                // New displacement based on current rate
+                if (!p.displaced && Math.random() < params.displacement * 0.3) {
+                    p.displaced = true;
+                    p.wealth *= 0.7;
+                }
+
+                // Recovery chance based on social mobility (can recover if mobility increases)
+                if (p.displaced && Math.random() < params.mobility * 0.1) {
+                    p.displaced = false; // Worker finds new employment
+                }
+
+                // Data extraction based on current rate
+                if (!p.dataExtracted && Math.random() < params.dataExtraction * 0.1) {
+                    p.dataExtracted = true;
+                    const extractedValue = p.talent * 0.1;
+                    p.wealth -= extractedValue;
+                    if (aiOwners.length > 0) {
+                        aiOwners[0].wealth += extractedValue;
+                    }
+                }
+
+                // Regular income (reduced if displaced, boosted by mobility)
+                const incomeMultiplier = p.displaced ? 0.3 : 1;
+                const mobilityBonus = params.mobility * 0.5; // Higher mobility = better wages
+                p.wealth += (p.talent * p.effort * 0.5 * (1 + mobilityBonus)) * incomeMultiplier;
+            });
+
+            // Apply policy effects - policy can be changed mid-simulation
+            switch (state.policy) {
+                case 'ubi':
+                    const totalWealthUBI = state.population.reduce((s, p) => s + p.wealth, 0);
+                    const ubiAmount = totalWealthUBI * 0.03 / state.population.length;
+                    const ubiFunding = ubiAmount * state.population.length;
+
+                    // Tax AI owners progressively
+                    aiOwners.forEach(p => p.wealth -= ubiFunding / aiOwners.length);
+                    // Distribute UBI to everyone
+                    state.population.forEach(p => p.wealth += ubiAmount);
+
+                    // UBI helps displaced workers recover faster
+                    nonAIOwners.forEach(p => {
+                        if (p.displaced && Math.random() < 0.15) {
+                            p.displaced = false;
+                        }
+                    });
+                    break;
+
+                case 'ownership':
+                    // Distribute AI ownership more aggressively
+                    const currentAIOwners = state.population.filter(p => p.hasAI).length;
+                    if (currentAIOwners < 100) {
+                        // Find talented non-owners and give them ownership
+                        const candidates = nonAIOwners
+                            .filter(p => !p.hasAI && p.talent > 0.4)
+                            .sort((a, b) => b.talent - a.talent);
+
+                        const toAdd = Math.min(3, candidates.length);
+                        for (let i = 0; i < toAdd; i++) {
+                            if (candidates[i]) candidates[i].hasAI = true;
+                        }
+                    }
+                    break;
+
+                case 'data-rights':
+                    // Compensate for data extraction - ongoing compensation
+                    state.population.forEach(p => {
+                        if (p.dataExtracted) {
+                            const compensation = p.talent * 0.08;
+                            p.wealth += compensation;
+                        }
+                    });
+                    // Tax AI owners to fund compensation
+                    const compensationPool = state.population.filter(p => p.dataExtracted).length * 0.05;
+                    aiOwners.forEach(p => p.wealth -= compensationPool / Math.max(1, aiOwners.length));
+
+                    // Data rights awareness reduces new extraction
+                    state.population.forEach(p => {
+                        if (p.dataExtracted && Math.random() < 0.05) {
+                            p.dataExtracted = false; // Opted out
+                        }
+                    });
+                    break;
+            }
+
+            // Social mobility effect - talent-based wealth redistribution
+            if (params.mobility > 0.3) {
+                // High mobility: talented poor can rise
+                const poor = state.population.filter(p => p.wealth < 1);
+                poor.forEach(p => {
+                    if (p.talent > 0.7 && Math.random() < params.mobility * 0.2) {
+                        p.wealth *= 1.5; // Talent recognized
+                    }
+                });
+            }
+
+            // Ensure no negative wealth
+            state.population.forEach(p => {
+                if (p.wealth < 0) p.wealth = 0.01;
+            });
+
+            // Re-sort population by wealth
+            state.population.sort((a, b) => b.wealth - a.wealth);
+
+            // Calculate metrics
+            state.gini = Math.min(0.95, Math.max(0.2, calculateGini()));
+            state.giniHistory.push(state.gini);
+
+            const totalWealth = state.population.reduce((s, p) => s + p.wealth, 0);
+            const top1Wealth = state.population.slice(0, 5).reduce((s, p) => s + p.wealth, 0);
+            state.top1Share = Math.round((top1Wealth / totalWealth) * 100);
+
+            // Update philosophical scores based on current state
+            updatePhilosophicalScores();
+
+            state.year++;
+        }
+
+        // Update philosophical scores based on state
+        function updatePhilosophicalScores() {
+            const params = getParams();
+            const displacedCount = state.population.filter(p => p.displaced).length;
+            const extractedCount = state.population.filter(p => p.dataExtracted).length;
+
+            // Rawls: violated when inequality doesn't benefit least advantaged
+            const bottom20Wealth = state.population.slice(-100).reduce((s, p) => s + p.wealth, 0);
+            const avgBottom = bottom20Wealth / 100;
+            state.rawlsScore = Math.max(0, Math.min(100,
+                90 - (state.gini - 0.35) * 200 - (state.top1Share - 20) * 2
+            ));
+
+            // Nozick: violated when data extracted without consent
+            state.nozickScore = Math.max(0, Math.min(100,
+                85 - (extractedCount / state.population.length) * 80
+            ));
+
+            // Folk meritocracy: violated when success disconnects from talent/effort
+            const aiOwnersAvgTalent = state.population.filter(p => p.hasAI)
+                .reduce((s, p) => s + p.talent, 0) / 5;
+            state.meritScore = Math.max(0, Math.min(100,
+                85 - (state.top1Share - 20) * 1.5 - (displacedCount / state.population.length) * 50
+            ));
+
+            // System legitimacy: composite of other scores
+            state.legitimacyScore = (state.rawlsScore + state.nozickScore + state.meritScore) / 3;
+
+            // Apply policy bonuses
+            if (state.policy === 'ubi') {
+                state.rawlsScore = Math.min(100, state.rawlsScore + 15);
+                state.legitimacyScore = Math.min(100, state.legitimacyScore + 10);
+            }
+            if (state.policy === 'data-rights') {
+                state.nozickScore = Math.min(100, state.nozickScore + 20);
+            }
+            if (state.policy === 'ownership') {
+                state.meritScore = Math.min(100, state.meritScore + 10);
+                state.rawlsScore = Math.min(100, state.rawlsScore + 10);
+            }
+        }
+
+        // Draw main visualization
+        function drawMain() {
+            const width = mainCanvas.width / (window.devicePixelRatio || 1);
+            const height = mainCanvas.height / (window.devicePixelRatio || 1);
+
+            mainCtx.clearRect(0, 0, width, height);
+
+            // Background
+            mainCtx.fillStyle = 'rgba(15, 12, 41, 0.5)';
+            mainCtx.fillRect(0, 0, width, height);
+
+            // Draw wealth distribution as particles
+            const sorted = [...state.population].sort((a, b) => a.wealth - b.wealth);
+            const maxWealth = Math.max(...sorted.map(p => p.wealth));
+
+            sorted.forEach((p, i) => {
+                const x = (i / sorted.length) * width;
+                const barHeight = (p.wealth / maxWealth) * (height - 60);
+                const y = height - 30 - barHeight;
+
+                // Color based on status
+                let color;
+                if (p.hasAI) {
+                    color = '#f5576c'; // AI owners - red
+                } else if (p.displaced) {
+                    color = '#666'; // Displaced - gray
+                } else if (p.dataExtracted) {
+                    color = '#f093fb'; // Data extracted - pink
+                } else {
+                    color = '#4ecdc4'; // Normal - cyan
+                }
+
+                // Draw bar
+                const barWidth = Math.max(2, width / sorted.length - 1);
+                mainCtx.fillStyle = color;
+                mainCtx.fillRect(x, y, barWidth, barHeight);
+            });
+
+            // Draw legend
+            mainCtx.font = '11px Segoe UI';
+            const legendItems = [
+                { color: '#f5576c', label: 'AI Capital Owners' },
+                { color: '#4ecdc4', label: 'Workers' },
+                { color: '#f093fb', label: 'Data Extracted' },
+                { color: '#666', label: 'Displaced' }
+            ];
+
+            legendItems.forEach((item, i) => {
+                const lx = 15 + i * 130;
+                mainCtx.fillStyle = item.color;
+                mainCtx.fillRect(lx, 15, 12, 12);
+                mainCtx.fillStyle = '#ccc';
+                mainCtx.fillText(item.label, lx + 18, 24);
+            });
+
+            // Draw axis labels
+            mainCtx.fillStyle = '#8892b0';
+            mainCtx.font = '11px Segoe UI';
+            mainCtx.textAlign = 'center';
+            mainCtx.fillText('Population (sorted by wealth)', width / 2, height - 8);
+
+            mainCtx.save();
+            mainCtx.translate(12, height / 2);
+            mainCtx.rotate(-Math.PI / 2);
+            mainCtx.fillText('Wealth', 0, 0);
+            mainCtx.restore();
+        }
+
+        // Draw timeline
+        function drawTimeline() {
+            const width = timelineCanvas.width / (window.devicePixelRatio || 1);
+            const height = timelineCanvas.height / (window.devicePixelRatio || 1);
+
+            timelineCtx.clearRect(0, 0, width, height);
+
+            if (state.giniHistory.length < 2) return;
+
+            // Draw grid
+            timelineCtx.strokeStyle = 'rgba(136, 146, 176, 0.2)';
+            timelineCtx.lineWidth = 1;
+            for (let i = 0; i <= 4; i++) {
+                const y = 10 + i * (height - 30) / 4;
+                timelineCtx.beginPath();
+                timelineCtx.moveTo(40, y);
+                timelineCtx.lineTo(width - 10, y);
+                timelineCtx.stroke();
+            }
+
+            // Draw Gini line
+            const maxHistory = 50;
+            const history = state.giniHistory.slice(-maxHistory);
+            const stepWidth = (width - 50) / maxHistory;
+
+            timelineCtx.beginPath();
+            timelineCtx.strokeStyle = '#f5576c';
+            timelineCtx.lineWidth = 2;
+
+            history.forEach((g, i) => {
+                const x = 40 + i * stepWidth;
+                const y = 10 + (1 - (g - 0.2) / 0.8) * (height - 30);
+                if (i === 0) timelineCtx.moveTo(x, y);
+                else timelineCtx.lineTo(x, y);
+            });
+            timelineCtx.stroke();
+
+            // Fill area
+            timelineCtx.lineTo(40 + (history.length - 1) * stepWidth, height - 20);
+            timelineCtx.lineTo(40, height - 20);
+            timelineCtx.closePath();
+            timelineCtx.fillStyle = 'rgba(245, 87, 108, 0.2)';
+            timelineCtx.fill();
+
+            // Y-axis labels
+            timelineCtx.fillStyle = '#8892b0';
+            timelineCtx.font = '10px Segoe UI';
+            timelineCtx.textAlign = 'right';
+            timelineCtx.fillText('1.0', 35, 15);
+            timelineCtx.fillText('0.6', 35, 10 + (height - 30) / 2);
+            timelineCtx.fillText('0.2', 35, height - 15);
+        }
+
+        // Update UI elements
+        function updateUI() {
+            document.getElementById('yearDisplay').textContent = state.year;
+            document.getElementById('giniDisplay').textContent = state.gini.toFixed(2);
+            document.getElementById('top1Display').textContent = state.top1Share + '%';
+            document.getElementById('meritDisplay').textContent = Math.round(state.meritScore) + '%';
+
+            // Update philosophy cards
+            updatePhilosophyCard('rawls', state.rawlsScore);
+            updatePhilosophyCard('nozick', state.nozickScore);
+            updatePhilosophyCard('merit', state.meritScore);
+            updatePhilosophyCard('legitimacy', state.legitimacyScore);
+
+            // Update window indicator
+            const window = document.getElementById('windowIndicator');
+            if (state.legitimacyScore > 60) {
+                window.className = 'window-indicator open';
+                window.textContent = 'Window for Institutional Change: OPEN';
+            } else if (state.legitimacyScore > 35) {
+                window.className = 'window-indicator closing';
+                window.textContent = 'Window for Institutional Change: CLOSING';
+            } else {
+                window.className = 'window-indicator closed';
+                window.textContent = 'Window for Institutional Change: CLOSED - Power too concentrated';
+            }
+
+            // Update info panel
+            updateInfoPanel();
+        }
+
+        function updatePhilosophyCard(id, score) {
+            const status = document.getElementById(id + 'Status');
+            const meter = document.getElementById(id + 'Meter');
+            const text = document.getElementById(id + 'Text');
+
+            meter.style.width = score + '%';
+
+            if (score > 65) {
+                status.className = 'status intact';
+                status.textContent = id === 'legitimacy' ? 'Stable' : 'Intact';
+                meter.style.background = 'linear-gradient(90deg, #64ff96, #4ecdc4)';
+            } else if (score > 35) {
+                status.className = 'status strained';
+                status.textContent = 'Strained';
+                meter.style.background = 'linear-gradient(90deg, #ffd93d, #f5a623)';
+            } else {
+                status.className = 'status violated';
+                status.textContent = 'Violated';
+                meter.style.background = 'linear-gradient(90deg, #ff6464, #f5576c)';
+            }
+
+            // Update text based on state
+            const texts = {
+                rawls: {
+                    high: 'Inequalities benefit the least advantaged. The social contract remains viable.',
+                    mid: 'Bottom 20% seeing diminishing returns. Social contract under strain.',
+                    low: 'Inequality no longer benefits the least advantaged. Social contract violated.'
+                },
+                nozick: {
+                    high: 'Voluntary exchanges respected. People own the fruits of their labor.',
+                    mid: 'Data extraction without consent increasing. Self-ownership questioned.',
+                    low: 'Human creativity used as training data without consent. Pure instrumentalization.'
+                },
+                merit: {
+                    high: 'Hard work and talent lead to success. The meritocracy narrative holds.',
+                    mid: 'Capital ownership mattering more than effort. Narrative weakening.',
+                    low: '"Being in the right place at the right time" - no moral justification.'
+                },
+                legitimacy: {
+                    high: 'People accept inequality as fair. Social cohesion maintained.',
+                    mid: 'Growing skepticism about system fairness. Unrest possible.',
+                    low: 'Inequality seen as arbitrary/theft. System legitimacy collapsed.'
+                }
+            };
+
+            if (score > 65) text.textContent = texts[id].high;
+            else if (score > 35) text.textContent = texts[id].mid;
+            else text.textContent = texts[id].low;
+        }
+
+        function updateInfoPanel() {
+            const title = document.getElementById('infoTitle');
+            const text = document.getElementById('infoText');
+
+            if (state.year === 2024) {
+                title.textContent = 'The Philosophical Stakes';
+                text.textContent = 'Both Rawls and Nozick agreed that people cannot be mere means to an end. AI challenges this by extracting human creativity as training data without consent (violating Nozick) and concentrating wealth without benefiting the least advantaged (violating Rawls). Run the simulation to see how different scenarios affect these moral foundations.';
+            } else if (state.legitimacyScore > 60) {
+                title.textContent = 'Year ' + state.year + ': Institutional Window Open';
+                text.textContent = 'There is still enough distributed economic and political power to reshape who controls AI infrastructure. Policy interventions can still be effective. The moral foundations of the system, while strained, have not yet collapsed.';
+            } else if (state.legitimacyScore > 35) {
+                title.textContent = 'Year ' + state.year + ': Critical Transition Period';
+                text.textContent = 'Wealth concentration is accelerating. The folk justification for inequality—that success comes from talent and effort—is breaking down. "I own the compute infrastructure" is becoming the only explanation for wealth, and it lacks moral resonance.';
+            } else {
+                title.textContent = 'Year ' + state.year + ': Post-Legitimacy Society';
+                text.textContent = 'Both Rawls and Nozick would recognize this as the instrumentalization they tried to prevent. People are being used as pure means—their data, their creativity—for capital accumulation. The system persists through power, not consent.';
+            }
+        }
+
+        // Main loop
+        function simulate() {
+            if (!state.running) return;
+
+            simulationStep();
+            drawMain();
+            drawTimeline();
+            updateUI();
+
+            state.animationId = setTimeout(() => requestAnimationFrame(simulate), 200);
+        }
+
+        // Reset
+        function reset() {
+            state.running = false;
+            if (state.animationId) {
+                clearTimeout(state.animationId);
+            }
+
+            initPopulation();
+            drawMain();
+            drawTimeline();
+            updateUI();
+
+            document.getElementById('startBtn').textContent = 'Start Simulation';
+        }
+
+        // Event listeners
+        document.getElementById('startBtn').addEventListener('click', () => {
+            if (state.running) {
+                state.running = false;
+                document.getElementById('startBtn').textContent = 'Start Simulation';
+            } else {
+                state.running = true;
+                document.getElementById('startBtn').textContent = 'Pause';
+                simulate();
+            }
+        });
+
+        document.getElementById('resetBtn').addEventListener('click', reset);
+
+        // Policy buttons
+        document.querySelectorAll('.policy-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.policy-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                state.policy = btn.dataset.policy;
+            });
+        });
+
+        // Sliders
+        const sliders = [
+            { id: 'aiGrowth', display: 'aiGrowthValue', format: v => v + '%/year' },
+            { id: 'displacement', display: 'displacementValue', format: v => v + '%/year' },
+            { id: 'dataExtraction', display: 'dataExtractionValue', format: v => v + '%' },
+            { id: 'initialGini', display: 'initialGiniValue', format: v => (v / 100).toFixed(2) },
+            { id: 'mobility', display: 'mobilityValue', format: v => v + '%' }
+        ];
+
+        sliders.forEach(({ id, display, format }) => {
+            document.getElementById(id).addEventListener('input', (e) => {
+                document.getElementById(display).textContent = format(parseInt(e.target.value));
+            });
+        });
+
+        // Initialize
+        window.addEventListener('resize', () => {
+            setupCanvas(mainCanvas, mainCtx);
+            setupCanvas(timelineCanvas, timelineCtx);
+            drawMain();
+            drawTimeline();
+        });
+
+        setupCanvas(mainCanvas, mainCtx);
+        setupCanvas(timelineCanvas, timelineCtx);
+        reset();
+    </script>
+</body>
+</html>

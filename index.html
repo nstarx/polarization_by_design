@@ -206,12 +206,19 @@
         }
 
         .feature-tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
             padding: 5px 10px;
             background: rgba(100, 255, 218, 0.1);
             border: 1px solid rgba(100, 255, 218, 0.3);
             border-radius: 15px;
             font-size: 0.8rem;
             color: #64ffda;
+        }
+
+        .feature-tag svg {
+            flex-shrink: 0;
         }
 
         .cta-button {
@@ -360,9 +367,24 @@
                         Experiment with single elite and competing elites scenarios to observe polarization dynamics in real-time.
                     </p>
                     <div class="card-features">
-                        <span class="feature-tag">Real-time visualization</span>
-                        <span class="feature-tag">8 preset scenarios</span>
-                        <span class="feature-tag">Adjustable parameters</span>
+                        <span class="feature-tag">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M3.75 3v11.25A2.25 2.25 0 0 0 6 16.5h2.25M3.75 3h-1.5m1.5 0h16.5m0 0h1.5m-1.5 0v11.25A2.25 2.25 0 0 1 18 16.5h-2.25m-7.5 0h7.5m-7.5 0-1 3m8.5-3 1 3m0 0 .5 1.5m-.5-1.5h-9.5m0 0-.5 1.5" />
+                            </svg>
+                            Real-time visualization
+                        </span>
+                        <span class="feature-tag">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M3.75 12h16.5m-16.5 3.75h16.5M3.75 19.5h16.5M5.625 4.5h12.75a1.875 1.875 0 0 1 0 3.75H5.625a1.875 1.875 0 0 1 0-3.75Z" />
+                            </svg>
+                            8 preset scenarios
+                        </span>
+                        <span class="feature-tag">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M10.5 6h9.75M10.5 6a1.5 1.5 0 1 1-3 0m3 0a1.5 1.5 0 1 0-3 0M3.75 6H7.5m3 12h9.75m-9.75 0a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m-3.75 0H7.5m9-6h3.75m-3.75 0a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m-9.75 0h9.75" />
+                            </svg>
+                            Adjustable parameters
+                        </span>
                     </div>
                     <div class="cta-button">
                         Launch Simulator
@@ -427,6 +449,39 @@
                     </div>
                     <div class="cta-button">
                         View Infographic
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" />
+                        </svg>
+                    </div>
+                </div>
+            </a>
+
+            <a href="ai-moral-foundation.html" class="card">
+                <div class="card-preview" style="background: linear-gradient(135deg, #0f0c29, #302b63); display: flex; align-items: center; justify-content: center;">
+                    <div style="text-align: center; padding: 20px;">
+                        <div style="margin-bottom: 15px;">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#f093fb" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M12 3v17.25m0 0c-1.472 0-2.882.265-4.185.75M12 20.25c1.472 0 2.882.265 4.185.75M18.75 4.97A48.416 48.416 0 0 0 12 4.5c-2.291 0-4.545.16-6.75.47m13.5 0c1.01.143 2.01.317 3 .52m-3-.52 2.62 10.726c.122.499-.106 1.028-.589 1.202a5.988 5.988 0 0 1-2.031.352 5.988 5.988 0 0 1-2.031-.352c-.483-.174-.711-.703-.59-1.202L18.75 4.971Zm-16.5.52c.99-.203 1.99-.377 3-.52m0 0 2.62 10.726c.122.499-.106 1.028-.589 1.202a5.989 5.989 0 0 1-2.031.352 5.989 5.989 0 0 1-2.031-.352c-.483-.174-.711-.703-.59-1.202L5.25 4.971Z" />
+                            </svg>
+                        </div>
+                        <div style="color: #f093fb; font-size: 1.1rem; font-weight: bold;">Rawls vs Nozick</div>
+                        <div style="color: #8892b0; font-size: 0.85rem; margin-top: 5px;">Moral Foundation Simulator</div>
+                    </div>
+                </div>
+                <div class="card-content">
+                    <span class="card-badge" style="background: linear-gradient(135deg, #f093fb, #f5576c);">New</span>
+                    <h2>AI & Moral Foundation</h2>
+                    <p>
+                        Simulate how AI-driven wealth concentration erodes the philosophical justifications
+                        for inequality. Based on Ryan Moser's analysis of Rawls and Nozick.
+                    </p>
+                    <div class="card-features">
+                        <span class="feature-tag">Wealth distribution</span>
+                        <span class="feature-tag">Policy interventions</span>
+                        <span class="feature-tag">Philosophy metrics</span>
+                    </div>
+                    <div class="cta-button">
+                        Launch Simulator
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                             <path d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" />
                         </svg>
